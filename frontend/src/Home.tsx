@@ -8,17 +8,21 @@ import { DropdownOption, DropdownOptionLabel, NumberMap } from "./types";
 import Stake from "./Stake";
 import { rebaseABI, rebaseAddress } from "./rebase-abi";
 import { readABI, readAddress } from "./batch-read-rebase";
-import { rewardsAddress } from "./rebase-rewards";
+import { rewardsAddress, lpRewardsAddress } from "./rebase-rewards";
 import erc20ABI from "./erc20-abi.json";
 import * as data from "./data";
-// const UINT256MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+import { prettyPrint } from "./formatting";
+
+const wethToken = '0x4200000000000000000000000000000000000006';
+const wethRefiLPToken = '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4';
 
 export const options: readonly DropdownOption[] = [
   { value: '0x940181a94A35A4569E4529A3CDfB74e38FD98631', label: '$AERO', symbol: 'aero'},
   { value: '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', label: '$BUILD', symbol: 'build'},
   { value: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed', label: '$DEGEN', symbol: 'degen'},
-  { value: '0x4200000000000000000000000000000000000006', label: '$ETH', symbol: 'eth'},
+  { value: wethToken, label: '$ETH', symbol: 'eth'},
   { value: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe', label: '$HIGHER', symbol: 'higher'},
+  { value: wethRefiLPToken, label: '$WETH/REFI', symbol: 'eth'},
 ];
 
 const formatOptionLabel = ({ label, description }: DropdownOptionLabel) => (
@@ -39,6 +43,7 @@ function Home() {
   const [approving, setApproving] = useState(false);
   const [cacheBust, setCacheBust] = useState(1);
   const [prices, setPrices] = useState<NumberMap>({});
+  const [mode, setMode] = useState(0);
 
   const { writeContract, error: writeError, data: writeData } = useWriteContract();
 
@@ -80,6 +85,15 @@ function Home() {
   });
   const stakes = (stakesRes || []) as bigint[];
   console.log(stakes);
+
+  const { data: lpWethRes } = useReadContract({
+    abi: erc20ABI,
+    address: wethToken as Address,
+    functionName: "balanceOf",
+    args: [wethRefiLPToken],
+  });
+  const lpWethWei = (lpWethRes || 0) as bigint;
+  stakes[stakes.length - 1] = lpWethWei;
 
   const { data: symbolRes } = useReadContract({
     abi: erc20ABI,
@@ -163,7 +177,9 @@ function Home() {
       abi: rebaseABI,
       address: rebaseAddress,
       functionName: "stake",
-      args: [token, wei, [rewardsAddress]],
+      args: [token, wei, [
+        token == wethRefiLPToken ? lpRewardsAddress : rewardsAddress
+      ]],
     });
   };
 
@@ -194,13 +210,33 @@ function Home() {
 
   const pending = staking || unstaking || stakingETH;
 
+  const isAll = mode == 0 ? quantity == userWalletUnits : quantity == userStakedUnits;
+
+  let allTVL = 0;
+  options.forEach((o, i) => {
+    const price = prices[o.symbol] as number;
+    const tvl = price && stakes[i] ? (price * parseFloat(formatUnits(stakes[i], 18))) : null;
+    if (tvl) {
+      allTVL += tvl;
+    }
+  });
+
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ textAlign: "center" }}>
           <h1>Rebase</h1>
-          <p>Rebase is a protocol for launching tokens. <Link to="/about">Learn more</Link></p>
+          {
+            allTVL > 0 ? (
+              <p>
+                ${prettyPrint(allTVL.toString(), 0)} is currently staked in Rebase: a protocol for launching tokens to holders of other tokens. <Link to="/about">Learn more</Link>
+              </p>
+            ) : (
+              <p>Rebase is a protocol for launching tokens to holders of other tokens. <Link to="/about">Learn more</Link></p>
+            )
+          }
         </div>
+        <br />
         <div
           style={{
             border: "1px solid #ccc",
@@ -221,12 +257,16 @@ function Home() {
                   return {
                     value: o.value,
                     label: o.label,
-                    description: tvl ? `$${parseFloat(tvl.toFixed(0)).toLocaleString()} staked` : '',
+                    description: tvl ? `$${prettyPrint(tvl.toString(), 0)} staked` : '',
                   };
                 })}
                 id="coin-selector"
                 classNamePrefix="coin-selector"
-                onChange={(e) => setToken(e ? e.value as Address : null)}
+                onChange={(e) => {
+                  setMode(0);
+                  setQuantity("");
+                  setToken(e ? e.value as Address : null)
+                }}
                 formatCreateLabel={(inputValue) => `Stake ${inputValue}`}
                 formatOptionLabel={formatOptionLabel}
               />
@@ -237,96 +277,159 @@ function Home() {
               <div>
                 <h2>${symbol}</h2>
                 <div style={{ fontSize: '.8em', marginTop: '1em' }}>
-                <div>{totalStakedUnits} ${symbol} staked in total</div>
-                <div>{userStakedUnits} ${symbol} staked by you</div>
-                <div>{userWalletUnits} ${symbol} available to stake</div>
+                <div>{prettyPrint(totalStakedUnits, 4)} ${symbol} staked in total</div>
+                <div>{prettyPrint(userStakedUnits, 4)} ${symbol} staked by you</div>
+                <div>{prettyPrint(userWalletUnits, 4)} ${symbol} available to stake</div>
                 </div>
                 <br />
-                <input
-                  className="buy-input"
-                  type="text"
-                  name="quantity"
-                  autoComplete="off"
-                  placeholder="quantity"
-                  style={{ width: "100%" }}
-                  value={quantity}
-                  onChange={(e) => {
-                    setQuantity(e.target.value.replace(/[^0-9.]/g, ''));
-                  }}
-                />
+                <div className="flex">
+                  <div
+                    className="flex-grow"
+                    style={{
+                      textAlign: "center",
+                      fontWeight: 'bold',
+                      padding: '.25em 0',
+                      cursor: 'pointer',
+                      borderRadius: '12px',
+                      border: mode == 0 ? '1px solid #999' : 'transparent'
+                    }}
+                    onClick={() => {
+                      setMode(0);
+                      setQuantity("")
+                    }}
+                  >
+                    Stake
+                  </div>
+                  <div
+                    className="flex-grow"
+                    style={{
+                      textAlign: "center",
+                      fontWeight: 'bold',
+                      padding: '.25em 0',
+                      cursor: 'pointer',
+                      borderRadius: '12px',
+                      border: mode == 1 ? '1px solid #999' : 'transparent'
+                    }}
+                    onClick={() => {
+                      setMode(1);
+                      setQuantity("")
+                    }}
+                  >
+                    Unstake
+                  </div>
+                </div>
                 <br />
+                <div className="flex">
+                  <div className="flex-shrink">&nbsp;</div>
+                  <input
+                    className="flex-grow buy-input"
+                    type="text"
+                    name="quantity"
+                    autoComplete="off"
+                    placeholder="quantity"
+                    style={{ width: "100%" }}
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value.replace(/[^0-9.]/g, ''));
+                    }}
+                  />
+                  <div
+                    className="flex-shrink"
+                    style={{ marginLeft: '1em', minWidth: '4em' }}
+                    onClick={() => isAll ? setQuantity("") : setQuantity(mode == 0 ? userWalletUnits : userStakedUnits)}
+                  >
+                    <input
+                      id="all"
+                      type="checkbox"
+                      checked={isAll}
+                    />
+                    <label htmlFor="all">&nbsp;all</label>
+                  </div>
+                </div>
                 <br />
-                <div className="flex" style={{ alignItems: "end" }}>
                 {
-                  symbol == "WETH" && (
-                    <button
-                      type="button"
-                      className="buy-button"
-                      onClick={stakeETH}
-                      disabled={pending || !(input > 0)}
-                        style={{ marginRight: '.5em'}}
-                    >
-                      {stakingETH ? 'staking' : 'stake ETH'}
+                  mode == 0 ? (
+                    <div>
                       {
-                        stakingETH ? (
-                          <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                        ) : null
+                        symbol == "WETH" && (
+                          <div>
+                            <div className="flex" style={{ alignItems: "end" }}>
+                              <button
+                                type="button"
+                                className="buy-button flex-grow"
+                                onClick={stakeETH}
+                                disabled={pending || !(input > 0)}
+                                  style={{ marginRight: '.5em'}}
+                              >
+                                {stakingETH ? 'staking' : 'stake ETH'}
+                                {
+                                  stakingETH ? (
+                                    <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                                  ) : null
+                                }
+                              </button>
+                            </div>
+                            <div style={{ textAlign: 'center', fontStyle: 'italic' }}>or</div>
+                          </div>
+                        )
                       }
-                    </button>
+                      <div className="flex" style={{ alignItems: "end" }}>
+                        {
+                          hasAllowance ? (
+                            <button
+                              type="button"
+                              className="buy-button flex-grow"
+                              onClick={stake}
+                              disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
+                            >
+                              {staking ? 'staking' : 'stake'}
+                              {symbol == 'WETH' ? ' WETH' : ''}
+                              {
+                                staking ? (
+                                  <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                                ) : null
+                              }
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="buy-button flex-grow"
+                              onClick={approve}
+                              disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
+                            >
+                              {approving ? 'approving' : 'approve and stake'}
+                              {symbol == 'WETH' ? ' WETH' : ''}
+                              {
+                                approving ? (
+                                  <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                                ) : null
+                              }
+                            </button>
+                          )
+                        }
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex" style={{ alignItems: "end" }}>
+                      <button
+                        type="button"
+                        className="buy-button flex-grow"
+                        onClick={unstake}
+                        disabled={pending || !(input > 0 && parseFloat(userStakedUnits) >= input)}
+                      >
+                        {unstaking ? 'unstaking' : 'unstake'}
+                        {
+                          unstaking ? (
+                            <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                          ) : null
+                        }
+                      </button>
+                    </div>
                   )
                 }
-                  {
-                    hasAllowance ? (
-                      <button
-                        type="button"
-                        className="buy-button"
-                        onClick={stake}
-                        disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
-                        style={{ marginRight: '.5em'}}
-                      >
-                        {staking ? 'staking' : 'stake'}
-                        {symbol == 'WETH' ? ' WETH' : ''}
-                        {
-                          staking ? (
-                            <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                          ) : null
-                        }
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="buy-button"
-                        onClick={approve}
-                        disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
-                        style={{ marginRight: '.5em'}}
-                      >
-                        {approving ? 'approving' : 'approve and stake'}
-                        {symbol == 'WETH' ? ' WETH' : ''}
-                        {
-                          approving ? (
-                            <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                          ) : null
-                        }
-                      </button>
-                    )
-                  }
-                  <button
-                    type="button"
-                    className="buy-button"
-                    onClick={unstake}
-                    disabled={pending || !(input > 0 && parseFloat(userStakedUnits) >= input)}
-                  >
-                    {unstaking ? 'unstaking' : 'unstake'}
-                    {
-                      unstaking ? (
-                        <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                      ) : null
-                    }
-                  </button>
-                </div>
               </div>
             ) : (
-              <div style={{ fontSize: '.75em' }}><br />Stake one of the tokens above to start earning $REBASE. You can unstake at any time. Rewards run through early July.</div>
+              <div style={{ fontSize: '.75em' }}><br />$REFI is live! Stake any of the tokens above to earn $REFI. Unstake at any time.</div>
             )
           }
         </div>

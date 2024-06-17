@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits, Address } from 'viem';
+import { prettyPrint } from "./formatting";
 
 import { rebaseABI, rebaseAddress } from "./rebase-abi";
 import erc20ABI from "./erc20-abi.json";
+
 
 function Stake({ token }: { token: Address }) {
   const account = useAccount();
@@ -55,14 +57,14 @@ function Stake({ token }: { token: Address }) {
         }}
       >
         <div style={{ fontWeight: 'bold' }}>
-          {formatUnits(userStakedWei, decimals)} ${symbol}
+          {prettyPrint(formatUnits(userStakedWei, decimals), 4)} ${symbol}
         </div>
         <div
           style={{ fontSize: '.75em', cursor: 'pointer' }}
           onClick={() => setExpanded(!expanded)}
         >
           <br />
-          Restaked in {(appList.length)} token{appList.length != 1 ? 's' : ''}
+          Staked in {(appList.length)} token{appList.length != 1 ? 's' : ''}
           {
             appList.length > 0 &&
             <span>&nbsp;&nbsp;

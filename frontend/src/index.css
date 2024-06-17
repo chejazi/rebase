@@ -79,7 +79,7 @@ h1, h2 {
   top: 1em;
   left: 1.5em;
   width: 2em;
-  z-index: 2;
+  z-index: 1;
 }
 .nav > * {
   display: block;
@@ -200,6 +200,7 @@ h1, h2 {
 
 #coin-selector .coin-selector__menu {
   background-color: #2d3748;
+  z-index: 100;
 }
 
 #coin-selector .coin-selector__option {
