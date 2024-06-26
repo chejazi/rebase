@@ -1,15 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts@4.9.5/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts@4.9.5/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts@4.9.5/proxy/Clones.sol";
-import "@openzeppelin/contracts@4.9.5/utils/structs/EnumerableMap.sol";
-import "@openzeppelin/contracts@4.9.5/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/proxy/Clones.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "./ReToken.sol";
 
 interface Rebased {
-    function appname() external returns (string[] memory);
+    function appname() external returns (string memory);
     function restake(address user, address token, uint quantity) external;
     function unrestake(address user, address token, uint quantity) external;
 }
@@ -22,6 +23,7 @@ interface WETH {
 contract Rebase is ERC20Burnable {
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableMap for EnumerableMap.UintToAddressMap;
+    using SafeMath for uint256;
 
     struct User {
         bool locked;
@@ -84,8 +86,9 @@ contract Rebase is ERC20Burnable {
 
         ERC20(token).transferFrom(msg.sender, address(this), quantity);
         _getReToken(token).mint(msg.sender, quantity);
-        _stakes[token] += quantity;
-        user.tokenStake[token] += quantity;
+        _stakes[token] = _stakes[token].add(quantity);
+        user.tokenStake[token] = user.tokenStake[token].add(quantity);
+        user.tokens.add(token);
 
         emit Stake(msg.sender, token, quantity);
 
@@ -106,8 +109,9 @@ contract Rebase is ERC20Burnable {
 
         WETH(_WETH).deposit{value: quantity}();
         _getReToken(token).mint(msg.sender, quantity);
-        _stakes[token] += quantity;
-        user.tokenStake[token] += quantity;
+        _stakes[token] = _stakes[token].add(quantity);
+        user.tokenStake[token] = user.tokenStake[token].add(quantity);
+        user.tokens.add(token);
 
         emit Stake(msg.sender, token, quantity);
 
@@ -139,8 +143,9 @@ contract Rebase is ERC20Burnable {
         }
 
         _getReToken(token).burn(msg.sender, quantity);
-        _stakes[token] -= quantity;
-        user.tokenStake[token] -= quantity;
+        _stakes[token] = _stakes[token].sub(quantity);
+        user.tokenStake[token] = user.tokenStake[token].sub(quantity);
+
         if (token == _WETH) {
             WETH(_WETH).withdraw(quantity);
             (bool success,) = msg.sender.call{value: quantity}("");
@@ -165,10 +170,11 @@ contract Rebase is ERC20Burnable {
         for (uint i = 0; i < apps.length; i++) {
             address app = apps[i];
             address token = tokens[i];
+            uint userStake = user.tokenStake[token];
             if (!user.tokenApps[token].contains(app)) {
                 user.tokenApps[token].add(app);
                 user.tokens.add(token);
-                require(_restake(app, token, user.tokenStake[token]), "Unable to restake to provided app contract");
+                require(userStake > 0 && _restake(app, token, userStake), "Unable to restake to provided app");
             }
         }
 
@@ -200,7 +206,7 @@ contract Rebase is ERC20Burnable {
 
     function _updateAppStakes(User storage user, address token, uint addedStake, address[] memory addedApps) internal {
         uint currentStake = user.tokenStake[token];
-        uint previousStake = currentStake - addedStake;
+        uint previousStake = currentStake.sub(addedStake);
         EnumerableSet.AddressSet storage userTokens = user.tokens;
         EnumerableSet.AddressSet storage userTokenApps = user.tokenApps[token];
         address[] memory existingApps = userTokenApps.values();

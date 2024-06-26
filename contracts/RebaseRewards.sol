@@ -1,12 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts@4.9.5/token/ERC20/ERC20.sol";
-import "./Rebase.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./RewardPool.sol";
 
+interface Rebased {
+    function appname() external returns (string memory);
+    function restake(address user, address token, uint quantity) external;
+    function unrestake(address user, address token, uint quantity) external;
+}
+
 contract RebaseRewards is Rebased {
-    address private _rebase;
+    address private immutable _rebase;
     address[] private _tokens;
     mapping(address => address) private _pools;
 
@@ -20,7 +25,7 @@ contract RebaseRewards is Rebased {
 
         address rewardToken = rebase;
         uint duration = (60 * 60 * 24 * 7 * 5); // 5 weeks
-        uint quantity = 50000000 * (10**18);
+        uint quantity = 200000000 * (10**18);
         for (uint i = 0; i < _tokens.length; i++) {
             _pools[_tokens[i]] = address(new RewardPool(quantity, rewardToken, duration));
         }
@@ -45,14 +50,22 @@ contract RebaseRewards is Rebased {
         }
     }
 
+    function claimRewards() external {
+        for (uint i = 0; i < _tokens.length; i++) {
+            RewardPool(_pools[_tokens[i]]).payReward(msg.sender);
+        }
+    }
+
     function getRewardPool(address token) external view returns (address) {
         return _pools[token];
     }
 
-    function claimRewards() external {
+    function getRewards(address user) external view returns (uint) {
+        uint earned = 0;
         for (uint i = 0; i < _tokens.length; i++) {
-            RewardPool(_pools[_tokens[i]]).getReward(msg.sender);
+            earned += RewardPool(_pools[_tokens[i]]).earned(user);
         }
+        return earned;
     }
 
     function getTokens() public view returns (address[] memory) {

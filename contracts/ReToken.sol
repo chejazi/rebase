@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts@4.9.5/token/ERC20/extensions/ERC20Snapshot.sol";
-import "@openzeppelin/contracts@4.9.5/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract ReToken is ERC20Snapshot {
     address private _deployer;
@@ -24,7 +24,7 @@ contract ReToken is ERC20Snapshot {
     }
 
     function name() public view override returns (string memory) {
-        return string.concat("Rebased ", ERC20(_token).name());
+        return string.concat("Rebase ", ERC20(_token).name());
     }
 
     function symbol() public view override returns (string memory) {

@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts@4.9.5/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts@4.9.5/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 contract REFI is ERC20Burnable {
     address private immutable _rebase;
 
-    event Redeem (
+    event Convert (
         address indexed user,
         uint quantity
     );
@@ -18,11 +18,12 @@ contract REFI is ERC20Burnable {
         _mint(address(this), 1000000000 * (1 ether));
     }
 
-    function redeem(uint quantity) external {
+    function convert() external {
+        uint quantity = ERC20Burnable(_rebase).balanceOf(msg.sender);
         ERC20Burnable(_rebase).transferFrom(msg.sender, address(this), quantity);
         ERC20Burnable(_rebase).burn(quantity);
-        transfer(msg.sender, quantity);
+        _transfer(address(this), msg.sender, quantity);
 
-        emit Redeem(msg.sender, quantity);
+        emit Convert(msg.sender, quantity);
     }
 }
