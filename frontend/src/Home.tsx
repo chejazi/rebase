@@ -17,18 +17,23 @@ const wethToken = '0x4200000000000000000000000000000000000006';
 const wethRefiLPToken = '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4';
 
 export const options: readonly DropdownOption[] = [
-  { value: '0x940181a94A35A4569E4529A3CDfB74e38FD98631', label: '$AERO', symbol: 'aero'},
-  { value: '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', label: '$BUILD', symbol: 'build'},
-  { value: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed', label: '$DEGEN', symbol: 'degen'},
-  { value: wethToken, label: '$ETH', symbol: 'eth'},
-  { value: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe', label: '$HIGHER', symbol: 'higher'},
-  { value: wethRefiLPToken, label: '$WETH/REFI', symbol: 'eth'},
+  { value: '0x940181a94A35A4569E4529A3CDfB74e38FD98631', label: '$AERO', symbol: 'aero', image: '/tokens/aero.webp'},
+  { value: '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', label: '$BUILD', symbol: 'build', image: '/tokens/build.webp'},
+  { value: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed', label: '$DEGEN', symbol: 'degen', image: '/tokens/degen.webp'},
+  { value: wethToken, label: '$ETH', symbol: 'eth', image: '/tokens/eth.webp'},
+  { value: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe', label: '$HIGHER', symbol: 'higher', image: '/tokens/higher.webp'},
+  { value: wethRefiLPToken, label: '$WETH/REFI', symbol: 'eth', image: '/tokens/lp-tokens.png'},
 ];
 
-const formatOptionLabel = ({ label, description }: DropdownOptionLabel) => (
-  <div>
-    <div style={{ fontWeight: 'bold' }}>{label}</div>
-    <div className="tvl" style={{ fontWeight: 'normal', fontSize: '.75em' }}>{description}</div>
+const formatOptionLabel = ({ label, description, symbol, image }: DropdownOptionLabel) => (
+  <div className="flex" style={{ alignItems: "center" }}>
+    <div className="flex-shrink" style={{ width: '24px', height: '24px', marginRight: '.5em' }}>
+      <img src={image} style={{ width: '24px', height: '24px', borderRadius: '500px' }} />
+    </div>
+    <div className="flex-grow">
+      <div style={{ fontWeight: 'bold' }}>{label}</div>
+      <div className="tvl" style={{ fontWeight: 'normal', fontSize: '.75em' }}>{description}</div>
+    </div>
   </div>
 );
 
@@ -236,7 +241,7 @@ function Home() {
             )
           }
         </div>
-        <br />
+        <h2>Stakes Assets</h2>
         <div
           style={{
             border: "1px solid #ccc",
@@ -257,6 +262,7 @@ function Home() {
                   return {
                     value: o.value,
                     label: o.label,
+                    image: o.image,
                     description: tvl ? `$${prettyPrint(tvl.toString(), 0)} staked` : '',
                   };
                 })}

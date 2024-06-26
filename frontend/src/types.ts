@@ -39,6 +39,7 @@ export interface DropdownOption {
 export interface DropdownOptionLabel {
   value: string;
   label: string;
+  image: string;
   description: string;
 }
 
