@@ -1,13 +1,13 @@
-import { ConnectKitButton } from "connectkit";
-import { Link, Route, Routes, useLocation } from "react-router-dom";
-import Home from "./Home";
-import About from "./About";
-import Rewards from "./Rewards";
+import { ConnectKitButton } from 'connectkit';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import Home from './Home';
+import About from './About';
+import Launch from './Launch';
 
 function App() {
   const location = useLocation();
 
-  const isRewards = location.pathname == '/rewards';
+  const isLaunch = location.pathname == '/launch';
   const isHome = location.pathname == '/';
   const isInfo = location.pathname == '/about';
 
@@ -27,13 +27,13 @@ function App() {
         <span />
         <Link
           style={{ fontSize: "1.5em", textDecoration: "none" }}
-          to={`/rewards`}
+          to={`/launch`}
         >
           {
-            isRewards ? (
-              <i className="fa-sharp fa-solid fa-gift"></i>
+            isLaunch ? (
+              <i className="fa-sharp fa-solid fa-square-plus"></i>
             ) : (
-              <i className="fa-sharp fa-light fa-gift"></i>
+              <i className="fa-sharp fa-light fa-square-plus"></i>
             )
           }
         </Link>
@@ -56,7 +56,7 @@ function App() {
       <br />
       <Routes>
         <Route path="/about" element={<About />} />
-        <Route path="/rewards" element={<Rewards />} />
+        <Route path="/launch" element={<Launch />} />
         <Route path="/" element={<Home />} />
       </Routes>
       <br />

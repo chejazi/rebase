@@ -34,6 +34,7 @@ export interface DropdownOption {
   value: string;
   label: string;
   symbol: string;
+  rewardPeriods: Array<number>;
 }
 
 export interface DropdownOptionLabel {
@@ -45,4 +46,26 @@ export interface DropdownOptionLabel {
 
 export interface NumberMap {
   [key: string]: number;
+}
+
+export interface StringMap {
+  [key: string]: string;
+}
+
+export interface StringNumberMap {
+  [key: string]: number;
+}
+
+export interface Token {
+  name: string;
+  symbol: string;
+  decimals: number;
+  image: string;
+  price: number;
+  appStake: bigint;
+  userStake: bigint;
+}
+
+export interface TokenMap {
+  [key: string]: Token;
 }

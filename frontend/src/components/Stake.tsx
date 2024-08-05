@@ -1,16 +1,15 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAccount, useReadContract } from "wagmi";
+import { Link } from 'react-router-dom';
+import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
-import { prettyPrint } from "./formatting";
 
-import { rebaseABI, rebaseAddress } from "./rebase-abi";
-import erc20ABI from "./erc20-abi.json";
+import { prettyPrint } from 'utils/formatting';
+import { getTokenImage } from 'utils/data';
+import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
+import { erc20ABI } from 'constants/abi-erc20';
 
 
 function Stake({ token }: { token: Address }) {
   const account = useAccount();
-  const [expanded, setExpanded] = useState(false);
 
   const { data: getUserTokenStakeRes } = useReadContract({
     abi: rebaseABI,
@@ -47,38 +46,31 @@ function Stake({ token }: { token: Address }) {
   return (
     <div style={{ position: "relative" }}>
       <div
+        className="ui-island"
         style={{
-          border: "1px solid #ccc",
+          cursor: "pointer",
           marginBottom: "1em",
           padding: "1em",
-          borderRadius: "12px",
           textDecoration: "none",
-          color: "inherit",
         }}
       >
-        <div style={{ fontWeight: 'bold' }}>
-          {prettyPrint(formatUnits(userStakedWei, decimals), 4)} ${symbol}
+        <div className="flex">
+          <div className="flex-shrink" style={{ width: '24px', height: '24px', marginRight: '.5em' }}>
+            <img src={getTokenImage(token as string)} style={{ width: '24px', height: '24px', borderRadius: '500px' }} />
+          </div>
+          <div className="flex-grow">
+            <div style={{ fontWeight: 'bold' }}>
+              {prettyPrint(formatUnits(userStakedWei, decimals), 4)} ${symbol}
+            </div>
+          </div>
         </div>
-        <div
-          style={{ fontSize: '.75em', cursor: 'pointer' }}
-          onClick={() => setExpanded(!expanded)}
-        >
-          <br />
-          Staked in {(appList.length)} token{appList.length != 1 ? 's' : ''}
-          {
-            appList.length > 0 &&
-            <span>&nbsp;&nbsp;
-              {
-                expanded ? (
-                  <i className="fa-solid fa-chevron-down" />
-                ) : (
-                  <i className="fa-solid fa-chevron-up" />
-                )
-              }
-            </span>
-          }
-          {
-            expanded ? (
+        {
+          false && (
+            <div
+              style={{ fontSize: '.75em' }}
+            >
+              <br />
+              Staked in {(appList.length)} token{appList.length != 1 ? 's' : ''}
               <div>
                 {
                   appList.map(app =>
@@ -86,9 +78,9 @@ function Stake({ token }: { token: Address }) {
                   )
                 }
               </div>
-            ) : null
-          }
-        </div>
+            </div>
+          )
+        }
       </div>
     </div>
   );

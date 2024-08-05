@@ -1,5 +1,5 @@
-export const readAddress = '0xC6cFD2b9891DEEa5B57eD9e01b82A2683a8be007';
-export const readABI = [
+export const batchReadAddress = '0xC6cFD2b9891DEEa5B57eD9e01b82A2683a8be007';
+export const batchReadABI = [
   {
     "inputs": [
       {

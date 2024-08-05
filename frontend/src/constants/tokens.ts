@@ -1,0 +1,15 @@
+export const tokens = {
+  '0xbf4db8b7a679f89ef38125d5f84dd1446af2ea3b': {label: 'BLEU', symbol: 'BLEU'},
+  '0x70737489DFDf1A29b7584d40500d3561bD4Fe196': {label: 'BORED', symbol: 'BORED'},
+  '0x3C281A39944a2319aA653D81Cfd93Ca10983D234': {label: 'BUILD', symbol: 'BUILD'},
+  '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed': {label: 'DEGEN', symbol: 'DEGEN'},
+  '0x8ad5b9007556749de59e088c88801a3aaa87134b': {label: 'FARTHER', symbol: 'FARTHER'},
+  '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe': {label: 'HIGHER', symbol: 'HIGHER'},
+  '0x9a6d24c02ec35ad970287ee8296d4d6552a31dbe': {label: 'OPN', symbol: 'OPN'},
+  '0x7dbdbf103bb03c6bdc584c0699aa1800566f0f84': {label: 'REFI', symbol: 'REFI'},
+  '0xb488fcb23333e7baa28d1dfd7b69a5d3a8bfeb3a': {label: 'TERMINAL', symbol: 'terminal'},
+  '0x6888c2409d48222e2cb738eb5a805a522a96ce80': {label: 'TREE', symbol: 'TREE'},
+  '0x0d97f261b1e88845184f678e2d1e7a98d9fd38de': {label: 'TYBG', symbol: 'TYBG'},
+  '0x5B5dee44552546ECEA05EDeA01DCD7Be7aa6144A': {label: 'TN100X', symbol: 'TN100x'},
+  '0x88e2da7b5de075d4cf4414e2d8162b51491461f8': {label: 'WTW', symbol: 'WTW'},
+};
