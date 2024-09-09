@@ -64,12 +64,12 @@ function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
     });
   };
 
-  const rewardsUnits = parseFloat(formatUnits(rewardsWei, 18)).toFixed(4);
-  const balanceUnits = parseFloat(formatUnits(balanceWei, 18)).toFixed(4);
+  const rewardsUnits = parseFloat(formatUnits(rewardsWei, 18));
+  const balanceUnits = parseFloat(formatUnits(balanceWei, 18));
 
   return (
     <div>
-      You own {prettyPrint(balanceUnits, 0)} ${tokenSymbol} and have {prettyPrint(rewardsUnits, 0)} ${tokenSymbol} to claim.
+      You own {prettyPrint(balanceUnits.toFixed(4), balanceUnits < 10 ? 3 : 0)} ${tokenSymbol} and have {prettyPrint(rewardsUnits.toFixed(4), rewardsUnits < 10 ? 3 : 0)} ${tokenSymbol} to claim.
       <br />
       <br />
       <div className="flex">

@@ -12,6 +12,8 @@ import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v1';
 const tokenAddresses = [
   '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84', // $REFI
   '0xd21111c0e32df451eb61A23478B438e3d71064CB', // $JOBS
+  '0x01929f1ae2dc8cac021e67987500389ae3536ced', // $PROXY
+  '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', // $BUILD
 ];
 
 function Home() {

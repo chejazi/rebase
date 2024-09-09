@@ -14,7 +14,7 @@ import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v0';
 import { rewardsAddress, lpRewardsAddress } from 'constants/abi-rebase-rewards';
 import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper';
 import { erc20ABI } from 'constants/abi-erc20';
-import { getPrices, getTokenImage, getStakingApp } from 'utils/data';
+import { getTokenPrices, getTokenImage, getStakingApp } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
 
 const wethToken = '0x4200000000000000000000000000000000000006';
@@ -33,8 +33,8 @@ export const refiOptions: readonly DropdownOption[] = [
   { value: '0x940181a94A35A4569E4529A3CDfB74e38FD98631', label: 'AERO', symbol: 'AERO', rewardPeriods: [0]},
   { value: '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', label: 'BUILD', symbol: 'BUILD', rewardPeriods: [0]},
   { value: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed', label: 'DEGEN', symbol: 'DEGEN', rewardPeriods: [0]},
-  { value: wethToken, label: 'ETH', symbol: 'WETH', rewardPeriods: [0]},
   { value: '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe', label: 'HIGHER', symbol: 'higher', rewardPeriods: [0]},
+  { value: wethToken, label: 'ETH', symbol: 'WETH', rewardPeriods: [0]},
   { value: wethRefiLPToken, label: 'vAMM-WETH/REFI', symbol: 'WETH', rewardPeriods: [1]},
 ];
 
@@ -85,7 +85,7 @@ function Project({ name }: ProjectProps) {
   });
 
   useEffect(() => {
-    getPrices().then((res) => {
+    getTokenPrices(refiOptions.map(o => o.value)).then((res) => {
       setPrices(res as NumberMap);
     });
   }, []);
@@ -116,15 +116,6 @@ function Project({ name }: ProjectProps) {
     args: [options.map(o => o.value)],
   });
   const stakes = (stakesRes || []) as bigint[];
-
-  const { data: lpWethRes } = useReadContract({
-    abi: erc20ABI,
-    address: wethToken as Address,
-    functionName: "balanceOf",
-    args: [wethRefiLPToken],
-  });
-  const lpWethWei = (lpWethRes || 0) as bigint;
-  stakes[stakes.length - 1] = lpWethWei;
 
   const { data: symbolRes } = useReadContract({
     abi: erc20ABI,
@@ -254,7 +245,7 @@ function Project({ name }: ProjectProps) {
 
   let allTVL = 0;
   options.forEach((o, i) => {
-    const price = prices[o.symbol] as number;
+    const price = prices[o.value] as number;
     const tvl = price && stakes[i] ? (price * parseFloat(formatUnits(stakes[i], 18))) : null;
     if (tvl) {
       allTVL += tvl;
@@ -262,9 +253,12 @@ function Project({ name }: ProjectProps) {
   });
 
   const transformedOptions = options.map((o, i) => {
-    const price = prices[o.symbol] as number;
+    const price = prices[o.value] as number;
     const stake = stakes[i] || 0n;
     const tvl = price && stake ? (price * parseFloat(formatUnits(stake, 18))) : null;
+    if (o.value == wethRefiLPToken) {
+      console.log(prices);
+    }
     return {
       value: o.value,
       label: `$${o.label}`,
@@ -283,6 +277,7 @@ function Project({ name }: ProjectProps) {
       description: 'Uniswap Position NFTs'
     };
   });
+
   console.log(newOptions);
 
   const selectedOption = transformedOptions.filter(t => t.value == token)?.[0];

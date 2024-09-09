@@ -124,7 +124,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
             <div style={{ fontSize: '.75em' }}>
               {
                 inRange ? (
-                  <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Wrong fee tier, use <Link to={`https://app.uniswap.org/add/${token0}/${token1}/${fee}`} target="_blank">this market</Link></span>
+                  <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Wrong fee tier, use <Link to={`https://app.uniswap.org/add/${token0}/${token1}/${feeTier}?minPrice=0&maxPrice=115792089237316195423570985008687907853269984665640564039457584007913129639935`} target="_blank">this market</Link></span>
                 ) : (
                   <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Position ineligible - not full range.</span>
                 )
@@ -145,7 +145,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
               }
             </button>
           ) : (
-            <button className="buy-button" type="button" disabled={loading} onClick={wrap}>
+            <button className="buy-button" type="button" disabled={loading || !inRange || !feeSupported} onClick={wrap}>
               wrap
               {
                 loading ? (
