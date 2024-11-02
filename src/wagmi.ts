@@ -5,8 +5,8 @@ import { base } from "wagmi/chains";
 export const config = createConfig(
   getDefaultConfig({
     chains: [base],
-    walletConnectProjectId: import.meta.env.VITE_WC_PROJECT_ID,
-    appName: "🆙",
+    walletConnectProjectId: 'aa5ce756d374d1956cc6489edcb9446c',
+    appName: "Rebase",
     transports: {
       [base.id]: http(),
       // [mainnet.id]: http(),

@@ -95,6 +95,7 @@ const tokenImages: StringMap = {
 
   '0x54bae536787d37bAcc028F9d62dCf8435Cde7a6d': '/tokens/lp-tokens.png', // UniV3 BUILD/ETH 1%
   '0xd8C21Dd22F84D9B668aF87E445b74C4B79c74380': '/tokens/lp-tokens.png', // UniV3 PROXY/ETH 1%
+  '0x904bF08bBfF4F65b8867Ded6D1A93F60A637A4E2': '/tokens/lp-tokens.png', // UniV3 PROXY/DEGEN 1%
   '0x376b6EA60dB5D1851c13522378234B2b9846f6C0': '/tokens/lp-tokens.png', // UniV3 WETH/JOBS 1%
   '0x064Cc7EBec6067745CE28FE065b45C6589620845': '/tokens/lp-tokens.png', // UniV3 WETH/REFI 1%
   '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4': '/tokens/lp-tokens.png', // Aerodrome WETH/REFI

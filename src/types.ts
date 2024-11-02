@@ -56,6 +56,10 @@ export interface StringNumberMap {
   [key: string]: number;
 }
 
+export interface StringBooleanMap {
+  [key: string]: boolean;
+}
+
 export interface Token {
   name: string;
   symbol: string;

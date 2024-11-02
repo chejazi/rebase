@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { Address } from 'viem';
@@ -19,6 +19,7 @@ const tokenAddresses = [
 function Home() {
   const [tokenSymbol, setTokenSymbol] = useState<string|null>(null);
   const [tokenAddress, setTokenAddress] = useState<string|null>(null);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   const { data: tokenMetadataRes } = useReadContract({
     abi: batchReadABI,
@@ -30,6 +31,12 @@ function Home() {
   // const names = tokenMetadata[0];
   const symbols = tokenMetadata[1];
   // const decimals = tokenMetadata[2].map(n => Number(n));
+
+  useEffect(() => {
+    if (refresh) {
+      setRefresh(false);
+    }
+  }, [refresh]);
 
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
@@ -47,6 +54,7 @@ function Home() {
                 onClick={() => {
                   setTokenAddress(t);
                   setTokenSymbol(symbols[i]);
+                  setRefresh(true);
                 }}
               >
                 <img className="token-logo" src={getTokenImage(t)} />
@@ -54,12 +62,12 @@ function Home() {
               </div>
             ))
           }
-          <Link to="/launch" className="token-box no-shadow" style={{ textDecoration: 'none' }}>
+{/*          <Link to="/launch" className="token-box no-shadow" style={{ textDecoration: 'none' }}>
             <div className="token-logo">
               <i className="far fa-plus" />
             </div>
             <div className="token-name">Launch</div>
-          </Link>
+          </Link>*/}
         </div>
         <br />
         {
@@ -69,7 +77,13 @@ function Home() {
                 tokenSymbol == 'REFI' ? (
                   <ProjectREFI name={tokenSymbol} />
                 ) : (
-                  <Project tokenAddress={tokenAddress as Address} projectSymbol={tokenSymbol} />
+                  <div>
+                    {
+                      !refresh ? (
+                        <Project tokenAddress={tokenAddress as Address} projectSymbol={tokenSymbol} />
+                      ) : null
+                    }
+                  </div>
                 )
               }
             </div>

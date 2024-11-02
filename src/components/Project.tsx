@@ -3,7 +3,7 @@ import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import Select from 'react-select';
 
-import { DropdownOptionLabel, StringNumberMap, TokenMap, Token } from '../types';
+import { DropdownOptionLabel, StringNumberMap, TokenMap, Token, StringBooleanMap } from '../types';
 import Pool from './Pool';
 import Rewards from './Rewards';
 import StakeManager from './StakeManager';
@@ -109,6 +109,18 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   userAppTokens.forEach((t, i) => tokenMap[t].userStake = userAppStakes[i]);
 
 
+  // Pools staked by user
+  const { data: userPoolsRes } = useReadContract({
+    abi: appABI,
+    address: appAddress,
+    functionName: "getUserPools",
+    args: [userAddress],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const userPools = (userPoolsRes || []) as Address[];
+  const userPoolSynced = {} as StringBooleanMap;
+  userPools.forEach(pool => userPoolSynced[pool] = true);
+
   // TOKEN SPECIFIC LOOKUPS
   const stakeSymbol = token && tokenMap[token] ? tokenMap[token].symbol : null;
   const stakeDecimals = token && tokenMap[token] ? tokenMap[token].decimals : 18;
@@ -119,8 +131,9 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     address: appAddress,
     functionName: "getTokenPools",
     args: [token],
+    scopeKey: `home-${cacheBust}`,
   });
-  const pools = (poolsRes || []) as Address[];
+  const pools = ((poolsRes || []) as Address[]).slice(0).reverse();
 
   let allTVL = 0;
   const options = Object.keys(tokenMap).map(address => {
@@ -141,7 +154,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   });
 
   const selectedOption = options.filter(t => t.value == token)?.[0];
-
+  console.log('X', pools, userPoolSynced);
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -175,11 +188,14 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                 {
                   pools.map(p => (
                     <Pool
+                      app={appAddress}
                       pool={p as string}
                       token={token as string}
                       rewardSymbol={projectSymbol}
                       stakeSymbol={stakeSymbol}
                       key={`pool-${p}`}
+                      synced={userPoolSynced[p]}
+                      onSync={() => setCacheBust(cacheBust + 1)}
                       cacheBust={cacheBust}
                     />
                   ))
