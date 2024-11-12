@@ -8,22 +8,21 @@ const SharedAprStake = () => {
     rewardTotal,
     endTime,
     startTime,
-    totalStakedUnits,
+    totalStakedWei,
     userStakedWei,
-    userWalletUnits,
     rewardSymbol,
-    decimals, // Ensure stakeDecimals is in shared state
+    stakeSymbol,
+    decimals, 
   } = useSharedDataStore();
 
   // Calculate progress
   const progress = Math.min((Date.now() / 1000 - startTime) / (endTime - startTime), 1) * 100;
-  const isEnded = progress === 100;
 
   // Calculate remaining reward
   const remainingReward = parseFloat(formatUnits(rewardTotal, decimals)) * (1 - progress / 100);
 
   // Calculate Your Share (percentage of total staked)
-  const YourShare = (parseFloat(formatUnits(userStakedWei, decimals)) / parseFloat(formatUnits(totalStakedUnits, decimals)));
+  const YourShare = (parseFloat(formatUnits(userStakedWei, decimals)) / parseFloat(formatUnits(totalStakedWei, decimals)));
 
   // Calculate Your Share of the Remaining Reward Pool
   const YourReward = remainingReward * YourShare 

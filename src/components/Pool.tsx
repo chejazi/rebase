@@ -92,9 +92,10 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
       endTime,
       rewardSymbol,
       startTime,
-      decimals, // Include decimals here
+      stakeSymbol,
+      decimals, 
     });
-  }, [rewardTotal, endTime, rewardSymbol, startTime, decimals, setSharedData]);
+  }, [rewardTotal, endTime, rewardSymbol, stakeSymbol, startTime, decimals, setSharedData]);
 
   // Handle contract write and transaction confirmation
   useEffect(() => {

@@ -5,10 +5,12 @@ interface SharedDataState {
   rewardTotal: bigint;
   endTime: number;
   startTime: number;
-  totalStakedUnits: string;
+  totalStakedWei: bigint;
   userStakedWei: bigint;
   userWalletUnits: string;
-  decimals: number; // Added decimals field
+  stakeSymbol: string;
+  rewardSymbol: string;
+  decimals: number; 
   setSharedData: (data: Partial<SharedDataState>) => void;
 }
 
@@ -16,9 +18,11 @@ export const useSharedDataStore = create<SharedDataState>((set) => ({
   rewardTotal: 0n,
   endTime: 0,
   startTime: 0,
-  totalStakedUnits: '',
+  totalStakedWei: 0n,
   userStakedWei: 0n,
   userWalletUnits: '',
-  decimals: 18, // Default to 18 decimals if not provided
+  rewardSymbol: '',
+  stakeSymbol: '',
+  decimals: 18, 
   setSharedData: (data) => set((state) => ({ ...state, ...data })),
 }));

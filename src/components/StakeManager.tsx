@@ -212,14 +212,15 @@ function StakeManager({
   const totalStakedUnits = formatUnits(totalStakedWei, stakeDecimals);
   const userStakedUnits = formatUnits(userStakedWei, stakeDecimals);
   const userWalletUnits = formatUnits(userWalletWei, stakeDecimals);
+  
 
   const pending = staking || unstaking || stakingETH;
 
   const isAll = mode == 0 ? quantity == userWalletUnits : quantity == userStakedUnits;
   
   useEffect(() => {
-    setSharedData({ totalStakedUnits, userStakedWei, userWalletUnits });
-  }, [totalStakedUnits, userStakedWei, userWalletUnits]);
+    setSharedData({ totalStakedWei, userStakedWei, userWalletUnits });
+  }, [totalStakedWei, userStakedWei, userWalletUnits]);
 
   return (
     <div>
