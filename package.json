@@ -19,7 +19,8 @@
     "react-select": "^5.8.0",
     "recharts": "^2.12.5",
     "viem": "latest",
-    "wagmi": "latest"
+    "wagmi": "latest",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.1.2",

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits, parseUnits, Address } from 'viem';
 import { Link } from "react-router-dom";
+import { poolABI } from 'constants/abi-reward-pool';
+import { useSharedDataStore } from '../tour/sharedDataStore';
 
 import LPStake from './LPStake';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
@@ -24,6 +26,7 @@ function StakeManager({
   stakeSymbol,
   stakeDecimals,
 }: StakeManagerProps) {
+  const setSharedData = useSharedDataStore((state) => state.setSharedData);
   const account = useAccount();
   const userAddress = account.address;
 
@@ -66,6 +69,42 @@ function StakeManager({
     }
   }, [writeError, isConfirmed]);
 
+  // PoolABI
+
+  const poolAddress = token as Address;
+
+  const { data: startTimeRes } = useReadContract({
+    abi: poolABI,
+    address: poolAddress,
+    functionName: "getStartTime",
+    args: [],
+  });
+  const startTime = Number(startTimeRes || 0);
+
+  console.log('startTime', startTime)
+
+  const { data: endTimeRes } = useReadContract({
+    abi: poolABI,
+    address: poolAddress,
+    functionName: "getEndTime",
+    args: [],
+  });
+  const endTime = Number(endTimeRes || 0);
+
+  console.log('endTime', endTime)
+
+  const { data: rewardTotalRes } = useReadContract({
+    abi: poolABI,
+    address: poolAddress,
+    functionName: "getTotalReward",
+    args: [],
+    scopeKey: `pool-${cacheBust}`,
+  });
+  const rewardTotal = (rewardTotalRes || 0n) as bigint;
+
+  console.log('rewardTotal', rewardTotal)
+
+
   // Tokens staked by all users
   const { data: appStakeRes } = useReadContract({
     abi: rebaseABI,
@@ -75,6 +114,7 @@ function StakeManager({
     scopeKey: `stakemanager-${cacheBust}`,
   });
   const totalStakedWei = (appStakeRes || 0n) as bigint;
+  
 
   // Tokens staked by user
   const { data: userAppStakeRes } = useReadContract({
@@ -176,6 +216,10 @@ function StakeManager({
   const pending = staking || unstaking || stakingETH;
 
   const isAll = mode == 0 ? quantity == userWalletUnits : quantity == userStakedUnits;
+  
+  useEffect(() => {
+    setSharedData({ totalStakedUnits, userStakedWei, userWalletUnits });
+  }, [totalStakedUnits, userStakedWei, userWalletUnits]);
 
   return (
     <div>
@@ -246,6 +290,9 @@ function StakeManager({
         <div>{prettyPrint(totalStakedUnits, 4)} ${stakeSymbol} staked in total</div>
         <div>{prettyPrint(userStakedUnits, 4)} ${stakeSymbol} staked by you ({(100 * parseFloat(String(userStakedWei)) / parseFloat(String(totalStakedWei || 1))).toFixed(0)}%)</div>
         <div>{prettyPrint(userWalletUnits, 4)} ${stakeSymbol} available to stake</div>
+        <div>
+          
+        </div>
       </div>
       <br />
       <div className="flex">
@@ -357,6 +404,7 @@ function StakeManager({
         )
       }
     </div>
+    
   );
 }
 
