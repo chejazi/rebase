@@ -2,16 +2,22 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import Select from 'react-select';
+import SharedAprStake from './SharedAprStake';
+
 
 import { DropdownOptionLabel, StringNumberMap, TokenMap, Token, StringBooleanMap } from '../types';
 import Pool from './Pool';
+
 import Rewards from './Rewards';
 import StakeManager from './StakeManager';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v1';
+
+
 import { appABI } from 'constants/abi-staking-app';
 import { getTokenPrices, getTokenImage, getStakingApp } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
+
 
 const formatOptionLabel = ({ label, description, image }: DropdownOptionLabel) => (
   <div className="flex" style={{ alignItems: 'center' }}>
@@ -81,17 +87,20 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     }
   }, [tokens, tokenStr]);
 
-  // Tokens staked by all users
-  const { data: appStakesRawRes } = useReadContract({
-    abi: rebaseABI,
-    address: rebaseAddress as Address,
-    functionName: "getAppStakes",
-    args: [appAddress],
-    scopeKey: `home-${cacheBust}`,
-  });
-  const appStakesRes = (appStakesRawRes || [[], []]) as [Address[], bigint[]];
-  const appTokens = appStakesRes[0];
-  const appStakes = appStakesRes[1];
+// Tokens staked by all users
+const { data: appStakesRawRes } = useReadContract({
+  abi: rebaseABI,
+  address: rebaseAddress as Address,
+  functionName: "getAppStakes",
+  args: [appAddress],
+  scopeKey: `home-${cacheBust}`,
+});
+
+// Safely handle response and extract appTokens and appStakes
+const appStakesRes = (appStakesRawRes || [[], []]) as [Address[], bigint[]];
+const appTokens = appStakesRes[0];
+const appStakes = appStakesRes[1];
+
 
   // Tokens staked by user
   const { data: userAppStakesRawRes } = useReadContract({
@@ -134,6 +143,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     scopeKey: `home-${cacheBust}`,
   });
   const pools = ((poolsRes || []) as Address[]).slice(0).reverse();
+
 
   let allTVL = 0;
   const options = Object.keys(tokenMap).map(address => {
@@ -199,8 +209,9 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                       cacheBust={cacheBust}
                     />
                   ))
-                }
+                }  
                 <br />
+                
                 <StakeManager
                   token={token as Address}
                   appAddress={appAddress}
@@ -208,6 +219,8 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                   stakeSymbol={stakeSymbol}
                   stakeDecimals={stakeDecimals}
                 />
+             
+            
               </div>
             ) : (
               <div style={{ fontSize: '.75em' }}>
@@ -221,6 +234,10 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
               </div>
             )
           }
+        </div>
+        <div>
+        <h1>APR</h1>
+        <SharedAprStake />
         </div>
         <h2>Manage</h2>
         {
