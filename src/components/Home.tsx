@@ -14,6 +14,7 @@ const tokenAddresses = [
   '0xd21111c0e32df451eb61A23478B438e3d71064CB', // $JOBS
   '0x01929f1ae2dc8cac021e67987500389ae3536ced', // $PROXY
   '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', // $BUILD
+  '0x1E6bA8BC42Bbd8C68Ca7E891bAc191F0e07B1d6F', // $VROOM
 ];
 
 function Home() {
@@ -62,12 +63,12 @@ function Home() {
               </div>
             ))
           }
-{/*          <Link to="/launch" className="token-box no-shadow" style={{ textDecoration: 'none' }}>
+          <Link to="/launch" className="token-box no-shadow" style={{ textDecoration: 'none' }}>
             <div className="token-logo">
               <i className="far fa-plus" />
             </div>
             <div className="token-name">Launch</div>
-          </Link>*/}
+          </Link>
         </div>
         <br />
         {

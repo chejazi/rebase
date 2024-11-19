@@ -68,6 +68,15 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
   });
   const rewardTotal = (rewardTotalRes || 0n) as bigint;
 
+  const { data: stakeTotalRes } = useReadContract({
+    abi: appABI,
+    address: app,
+    functionName: "getUserStake",
+    args: [userAddress, token],
+    scopeKey: `pool-${cacheBust}`,
+  });
+  const stakeTotal = (stakeTotalRes || 0n) as bigint;
+
   // Used for the reward token
   const { data: decimalsRes } = useReadContract({
     abi: erc20ABI,
@@ -100,7 +109,7 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
         />
       </div>
       {
-        !synced && userAddress ? (
+        !synced && userAddress && stakeTotal > 0 ? (
           <div className="flex-shrink">
             <button
               type="button"

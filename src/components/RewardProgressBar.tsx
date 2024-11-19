@@ -21,7 +21,7 @@ function RewardProgressBar({
 }: RewardProgressBarProps) {
   const now = Math.floor((new Date().getTime()) / 1000);
   const duration = endTime - startTime;
-  const progress = Math.min((now - startTime), duration) / duration * 100;
+  const progress = Math.abs(Math.min((now - startTime), duration) / duration * 100);
   const done = progress == 100;
   return (
     <div>

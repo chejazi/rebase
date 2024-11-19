@@ -79,6 +79,7 @@ const tokenImages: StringMap = {
   '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe': '/tokens/higher.webp',
   '0xBf4Db8b7A679F89Ef38125d5F84dd1446AF2ea3B': '/tokens/bleu.webp',
   '0x70737489DFDf1A29b7584d40500d3561bD4Fe196': '/tokens/bored.jpeg',
+  '0x621E87AF48115122Cd96209F820fE0445C2ea90e': '/tokens/crash.webp',
   '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed': '/tokens/degen.webp',
   '0x4200000000000000000000000000000000000006': '/tokens/eth.webp',
   '0x8ad5b9007556749DE59E088c88801a3Aaa87134B': '/tokens/farther.png',
@@ -91,6 +92,7 @@ const tokenImages: StringMap = {
   '0x5B5dee44552546ECEA05EDeA01DCD7Be7aa6144A': '/tokens/tn100x.png',
   '0x6888c2409D48222E2CB738eB5a805A522a96CE80': '/tokens/tree.png',
   '0x0d97F261b1e88845184f678e2d1e7a98D9FD38dE': '/tokens/tybg.jpeg',
+  '0x1E6bA8BC42Bbd8C68Ca7E891bAc191F0e07B1d6F': '/tokens/vroom.png',
   '0x88E2dA7B5dE075d4Cf4414e2D8162b51491461F8': '/tokens/wtw.png',
 
   '0x54bae536787d37bAcc028F9d62dCf8435Cde7a6d': '/tokens/lp-tokens.png', // UniV3 BUILD/ETH 1%
@@ -111,4 +113,5 @@ const stakingApps: StringMap = {
   'JOBS': '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81',
   'PROXY': '0xe117d1D5dFD48888e1fF7814147276Ae3aA9cd54',
   'BUILD': '0x4bA3f92f1d17c7a3be8749D7f1958C672502e6E5',
+  'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
 };
