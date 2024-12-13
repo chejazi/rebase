@@ -231,10 +231,12 @@ h1, h2, h3 {
   padding: 1em;
   background-color: #fff;
   display: inline-block;
-  max-width: 100px;
+  width: 100px;
   transition: box-shadow 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid transparent;
+  text-decoration: none;
+  overflow: hidden;
 }
 
 .token-box.selected, .token-box.selected:hover {
@@ -263,17 +265,21 @@ h1, h2, h3 {
 }
 
 .token-box .token-logo {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   font-size: 2em;
   font-weight: bold;
   border-radius: 500px;
 }
 
 .token-name {
-  font-family: serif;
-  font-style: italic;
+  margin-top: .5em;
+  font-size: 14px;
+  text-align: center;
   font-weight: bold;
+  text-overflow: ellipsis; /* Adds "..." if the text overflows */
+  overflow: hidden; /* Ensure overflowing text is hidden */
+  white-space: nowrap; /* Prevent wrapping */
 }
 
 .loading-bar {

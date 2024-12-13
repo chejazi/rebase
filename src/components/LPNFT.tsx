@@ -108,7 +108,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
   return (
     <div style={{ marginBottom: '.5em', alignItems: 'center', borderRadius: '12px', padding: '.5em 1em', margin: '1em 0' }} className="flex secondary-bg">
       <div className="flex-grow">
-        LP #{tokenId}&nbsp;&nbsp;<Link to={`https://base.nftscan.com/0x03a520b32c04bf3beef7beb72e919cf822ed34f1/${tokenId}`} target="_blank"><i className="fa-light fa-arrow-up-right-from-square" /></Link>
+        LP #{tokenId}&nbsp;&nbsp;<Link to={`https://app.uniswap.org/positions/v3/base/${tokenId}`} target="_blank"><i className="fa-light fa-arrow-up-right-from-square" /></Link>
         {
           inRange && feeSupported ? (
             <div style={{ fontSize: '.75em' }}>

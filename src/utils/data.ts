@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getAddress } from 'viem'
-import { StringMap, NumberMap, StringNumberMap } from '../types';
+import { StringMap, NumberMap, StringNumberMap, PassportSocial } from '../types';
 
 const cache = {
   tokenPrices: {} as StringNumberMap,
@@ -70,10 +70,11 @@ export const getTokenPrices = async (addresses: string[]) => {
 };
 
 export const getTokenImage = (address: string) => {
-  return tokenImages[address] || tokenImages[getAddress(address)] || tokenImages['NONE'];
+  return tokenImages[address] || tokenImages[getAddress(address)] || getUnknownToken();
 };
 
 const tokenImages: StringMap = {
+  '0x0Db510e79909666d6dEc7f5e49370838c16D950f': '/tokens/anon.png',
   '0x940181a94A35A4569E4529A3CDfB74e38FD98631': '/tokens/aero.webp',
   '0x3C281A39944a2319aA653D81Cfd93Ca10983D234': '/tokens/build.png',
   '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe': '/tokens/higher.webp',
@@ -84,6 +85,7 @@ const tokenImages: StringMap = {
   '0x4200000000000000000000000000000000000006': '/tokens/eth.webp',
   '0x8ad5b9007556749DE59E088c88801a3Aaa87134B': '/tokens/farther.png',
   '0xd21111c0e32df451eb61A23478B438e3d71064CB': '/tokens/jobs.png',
+  '0x1215163D2c569433b9104cC92c5dB231e7FB62A1': '/tokens/launcher.png',
   '0xB1a03EdA10342529bBF8EB700a06C60441fEf25d': '/tokens/miggles.webp',
   '0x9A6d24c02eC35ad970287eE8296D4D6552a31DbE': '/tokens/opn.webp',
   '0x01929F1aE2dc8Cac021E67987500389aE3536CeD': '/tokens/proxy.png',
@@ -95,23 +97,43 @@ const tokenImages: StringMap = {
   '0x1E6bA8BC42Bbd8C68Ca7E891bAc191F0e07B1d6F': '/tokens/vroom.png',
   '0x88E2dA7B5dE075d4Cf4414e2D8162b51491461F8': '/tokens/wtw.png',
 
+  '0xb8d1df947D9Ca0f4fe741DA789E3ABEe73FD8747': '/tokens/lp-tokens.png', // UniV3 ANON/ETH 1%
   '0x54bae536787d37bAcc028F9d62dCf8435Cde7a6d': '/tokens/lp-tokens.png', // UniV3 BUILD/ETH 1%
   '0xd8C21Dd22F84D9B668aF87E445b74C4B79c74380': '/tokens/lp-tokens.png', // UniV3 PROXY/ETH 1%
   '0x904bF08bBfF4F65b8867Ded6D1A93F60A637A4E2': '/tokens/lp-tokens.png', // UniV3 PROXY/DEGEN 1%
+  '0xBC590e52232f5278dC661109476D9cA1FcdFDA34': '/tokens/lp-tokens.png', // UniV3 RaTcHeT/WETH 1%
   '0x376b6EA60dB5D1851c13522378234B2b9846f6C0': '/tokens/lp-tokens.png', // UniV3 WETH/JOBS 1%
   '0x064Cc7EBec6067745CE28FE065b45C6589620845': '/tokens/lp-tokens.png', // UniV3 WETH/REFI 1%
   '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4': '/tokens/lp-tokens.png', // Aerodrome WETH/REFI
-  'NONE': '/tokens/unknown-tokens.png',
 };
+
+export const getUnknownToken = () => '/tokens/unknown-token.png';
 
 export const getStakingApp = (symbol: string) => {
   return stakingApps[symbol];
 }
 
 const stakingApps: StringMap = {
-  // 'REFI': '',
+  // 'ANON': '0xb400A1698F7032693F8508586ceF41155ccc2b77',
+  'ANON': '0xeB0E5B1aB4391936365671FF5Fa969161a1eB2B0',
+  'REFI': '0x44F9DB2D109F0910BF32394FF346ee2cEA7d26BB',
   'JOBS': '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81',
   'PROXY': '0xe117d1D5dFD48888e1fF7814147276Ae3aA9cd54',
   'BUILD': '0x4bA3f92f1d17c7a3be8749D7f1958C672502e6E5',
   'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
+  'RaTcHeT': '0xE28395Dbbf3C16650321B0f87c29a3617E9C8070',
 };
+
+export async function address2FC(address: string) {
+  const response = await axios.get(
+    'https://4dclrhwmykkwtfebciminde34y0oyibh.lambda-url.us-east-1.on.aws/?address=' + address
+    // 'https://u3cey55qwrm3ndc7ymvsajjwzq0wfvrx.lambda-url.us-east-1.on.aws/?addresses=' + addresses.join(',')
+  );
+  if (response && response.data && !response.data.code) {
+    const user = response.data.passport.passport_socials.filter((s: PassportSocial) => s.source == 'farcaster')?.[0];
+    if (user) {
+      return user.profile_name;
+    }
+  }
+}
+

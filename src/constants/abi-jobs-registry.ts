@@ -1,4 +1,5 @@
-export const appABI = [
+export const registryAddress = '0x4011AaBAD557be4858E08496Db5B1f506a4e6167';
+export const registryABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
@@ -24,21 +25,14 @@ export const appABI = [
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "_poolTemplate",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "registrar",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "claimRewards",
+    "name": "addRegistrar",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -47,38 +41,12 @@ export const appABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "funder",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "duration",
-        "type": "uint256"
-      }
-    ],
-    "name": "createStakePool",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
+        "name": "user",
         "type": "address"
       }
     ],
+    "name": "autoRegister",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -86,11 +54,24 @@ export const appABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "token",
+        "name": "user",
         "type": "address"
       }
     ],
-    "name": "getNumTokenPools",
+    "name": "getBio",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNumRegistrars",
     "outputs": [
       {
         "internalType": "uint256",
@@ -103,45 +84,7 @@ export const appABI = [
   },
   {
     "inputs": [],
-    "name": "getNumTokens",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getNumUserPools",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getNumUserStakes",
+    "name": "getNumSplitters",
     "outputs": [
       {
         "internalType": "uint256",
@@ -154,26 +97,7 @@ export const appABI = [
   },
   {
     "inputs": [],
-    "name": "getRewardToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getRewards",
+    "name": "getNumUsers",
     "outputs": [
       {
         "internalType": "uint256",
@@ -192,55 +116,12 @@ export const appABI = [
         "type": "uint256"
       }
     ],
-    "name": "getTokenAt",
+    "name": "getRegistrarAt",
     "outputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTokenPoolAt",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "getTokenPools",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -248,7 +129,7 @@ export const appABI = [
   },
   {
     "inputs": [],
-    "name": "getTokens",
+    "name": "getRegistrars",
     "outputs": [
       {
         "internalType": "address[]",
@@ -265,14 +146,28 @@ export const appABI = [
         "internalType": "address",
         "name": "user",
         "type": "address"
-      },
+      }
+    ],
+    "name": "getSplitter",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
       }
     ],
-    "name": "getUserPoolAt",
+    "name": "getSplitterAt",
     "outputs": [
       {
         "internalType": "address",
@@ -284,14 +179,8 @@ export const appABI = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getUserPools",
+    "inputs": [],
+    "name": "getSplitters",
     "outputs": [
       {
         "internalType": "address[]",
@@ -304,76 +193,31 @@ export const appABI = [
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "getUserStake",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
       {
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
       }
     ],
-    "name": "getUserStakeAt",
+    "name": "getUserAt",
     "outputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getUserStakes",
+    "inputs": [],
+    "name": "getUsers",
     "outputs": [
       {
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -383,18 +227,38 @@ export const appABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "rewardToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "initialOwner",
+        "name": "registrar",
         "type": "address"
       }
     ],
-    "name": "init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "isRegistrar",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      }
+    ],
+    "name": "isSplitter",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -403,44 +267,17 @@ export const appABI = [
         "internalType": "address",
         "name": "user",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
       }
     ],
-    "name": "onStake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "isUser",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
-    "name": "onUnstake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -457,6 +294,32 @@ export const appABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "bio",
+        "type": "string"
+      }
+    ],
+    "name": "register",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "registrar",
+        "type": "address"
+      }
+    ],
+    "name": "removeRegistrar",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -466,12 +329,27 @@ export const appABI = [
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
+        "internalType": "address",
+        "name": "stakedUser",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "stakedToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "rewardToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rewardQuantity",
+        "type": "uint256"
       }
     ],
-    "name": "syncPools",
+    "name": "rewardStakers",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -492,12 +370,12 @@ export const appABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "manager",
-        "type": "address"
+        "internalType": "string",
+        "name": "bio",
+        "type": "string"
       }
     ],
-    "name": "updateManager",
+    "name": "update",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

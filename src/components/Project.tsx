@@ -8,9 +8,10 @@ import Pool from './Pool';
 import Rewards from './Rewards';
 import StakeManager from './StakeManager';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v1';
+import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
+import { tokenABI } from 'constants/abi-token';
 import { appABI } from 'constants/abi-staking-app';
-import { getTokenPrices, getTokenImage, getStakingApp } from 'utils/data';
+import { getTokenPrices, getTokenImage, getStakingApp, getUnknownToken } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
 
 const formatOptionLabel = ({ label, description, image }: DropdownOptionLabel) => (
@@ -38,7 +39,13 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   const [cacheBust, setCacheBust] = useState(1);
   const [prices, setPrices] = useState<StringNumberMap>({});
 
-  const appAddress = getStakingApp(projectSymbol) as Address;
+  const { data: stakerRes } = useReadContract({
+    abi: tokenABI,
+    address: tokenAddress as Address,
+    functionName: "getStaker",
+    args: [],
+  });
+  const appAddress = (stakerRes || getStakingApp(projectSymbol)) as Address;
 
   const tokenMap: TokenMap = {};
 
@@ -148,13 +155,13 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     return {
       value: address,
       label: `$${t.symbol}`,
-      image: t.image,
+      image: t.image || getUnknownToken(),
       description,
     };
   });
 
   const selectedOption = options.filter(t => t.value == token)?.[0];
-  console.log('X', pools, userPoolSynced);
+  console.log('X', options);
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -213,9 +220,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
               <div style={{ fontSize: '.75em' }}>
                 <br />
                 {
-                  allTVL > 0
-                  ? `Join $${prettyPrint(allTVL.toString(), 0)} worth of stakers earning $${projectSymbol}. `
-                  : `Stake the tokens above to earn $${projectSymbol}. `
+                  `Stake the tokens above to earn $${projectSymbol}. `
                 }
                 Unstake at any time.
               </div>

@@ -6,9 +6,10 @@ import { Address } from 'viem';
 import LPNFT from './LPNFT';
 import { lpWrapperAddress, lpWrapperABI } from 'constants/abi-lp-wrapper';
 import { lpTokenABI } from 'constants/abi-lp-token';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v1';
+import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
+const WETH = '0x4200000000000000000000000000000000000006';
 
 function LPStake({ token, onTransaction, symbol }: { token: Address; onTransaction: () => void; symbol: string; }) {
   const account = useAccount();
@@ -96,7 +97,10 @@ function LPStake({ token, onTransaction, symbol }: { token: Address; onTransacti
       {
         wrappedTokenIds.length == 0 && unwrappedTokenIds.length == 0 ? (
           <div style={{ fontSize: '.75em', fontStyle: 'italic' }}>
-            None found. Create a full-range position <Link to={`https://app.uniswap.org/add/${token0}/${token1}/${fee}`} target="_blank">here</Link>.
+            None found. Create a full-range position <Link
+              to={`https://app.uniswap.org/add/${token0 == WETH ? 'eth' : token0}/${token1 == WETH ? 'eth' : token1}/${fee}?minPrice=0.0&maxPrice=115792089237316195423570985008687907853269984665640564039457584007913129639935`}
+              target="_blank"
+            >here</Link>.
           </div>
         ) : (
           null

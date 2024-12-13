@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import { appABI } from 'constants/abi-staking-app';
+import { tokenABI } from 'constants/abi-token';
 import { erc20ABI } from 'constants/abi-erc20';
 import { prettyPrint } from 'utils/formatting';
 import { getStakingApp } from 'utils/data';
@@ -18,8 +19,6 @@ function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
   const [claimingRewards, setClaimingRewards] = useState(false);
   const [cacheBust, setCacheBust] = useState(1);
 
-  const appAddress = getStakingApp(tokenSymbol) as Address;
-
   const { writeContract, error: writeError, data: writeData } = useWriteContract();
 
   const { isSuccess: isConfirmed } = useWaitForTransactionReceipt({
@@ -35,6 +34,14 @@ function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
       setCacheBust(cacheBust + 1);
     }
   }, [writeError, isConfirmed]);
+
+  const { data: stakerRes } = useReadContract({
+    abi: tokenABI,
+    address: tokenAddress as Address,
+    functionName: "getStaker",
+    args: [],
+  });
+  const appAddress = (stakerRes || getStakingApp(tokenSymbol)) as Address;
 
   const { data: rewardsRes } = useReadContract({
     abi: appABI,

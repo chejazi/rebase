@@ -2,12 +2,13 @@ import { ConnectKitButton } from 'connectkit';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './Home';
 import About from './About';
-import Launch from './Launch';
+import Wallet from './Wallet';
+import Launcher from './Launcher';
 
 function App() {
   const location = useLocation();
 
-  const isLaunch = location.pathname == '/launch';
+  const isWallet = location.pathname == '/wallet';
   const isHome = location.pathname == '/';
   const isInfo = location.pathname == '/about';
 
@@ -27,13 +28,13 @@ function App() {
         <span />
         <Link
           style={{ fontSize: "1.5em", textDecoration: "none" }}
-          to={`/launch`}
+          to={`/wallet`}
         >
           {
-            isLaunch ? (
-              <i className="fa-sharp fa-solid fa-square-plus"></i>
+            isWallet ? (
+              <i className="fa-sharp fa-solid fa-wallet"></i>
             ) : (
-              <i className="fa-sharp fa-light fa-square-plus"></i>
+              <i className="fa-sharp fa-light fa-wallet"></i>
             )
           }
         </Link>
@@ -55,9 +56,10 @@ function App() {
       <br />
       <br />
       <Routes>
+        <Route path="/launcher" element={<Launcher />} />
         <Route path="/about" element={<About />} />
-        <Route path="/launch" element={<Launch />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/wallet" element={<Wallet />} />
+        <Route path="/:token?" element={<Home />} />
       </Routes>
       <br />
       <br />

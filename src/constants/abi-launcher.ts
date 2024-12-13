@@ -1,4 +1,5 @@
-export const appABI = [
+export const launcherAddress = '0xdbb1f02483B49E813D717Afe4dadF6D76eAF2F8f';
+export const launcherABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
@@ -24,21 +25,27 @@ export const appABI = [
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "_poolTemplate",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "deployer",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "name": "addDeployer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "claimRewards",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "protocol",
+        "type": "address"
+      }
+    ],
+    "name": "addProtocol",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -52,50 +59,28 @@ export const appABI = [
       },
       {
         "internalType": "address",
-        "name": "funder",
+        "name": "recipient",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "duration",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "createStakePool",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "name": "claimFees",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "getNumTokenPools",
+    "inputs": [],
+    "name": "getDeployers",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "address[]",
         "name": "",
-        "type": "uint256"
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -122,7 +107,7 @@ export const appABI = [
         "type": "address"
       }
     ],
-    "name": "getNumUserPools",
+    "name": "getNumUserCreatedTokens",
     "outputs": [
       {
         "internalType": "uint256",
@@ -141,7 +126,7 @@ export const appABI = [
         "type": "address"
       }
     ],
-    "name": "getNumUserStakes",
+    "name": "getNumUserManagedTokens",
     "outputs": [
       {
         "internalType": "uint256",
@@ -154,31 +139,12 @@ export const appABI = [
   },
   {
     "inputs": [],
-    "name": "getRewardToken",
+    "name": "getProtocols",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address[]",
         "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getRewards",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -198,49 +164,6 @@ export const appABI = [
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "index",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTokenPoolAt",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "getTokenPools",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -272,7 +195,7 @@ export const appABI = [
         "type": "uint256"
       }
     ],
-    "name": "getUserPoolAt",
+    "name": "getUserCreatedTokenAt",
     "outputs": [
       {
         "internalType": "address",
@@ -291,36 +214,12 @@ export const appABI = [
         "type": "address"
       }
     ],
-    "name": "getUserPools",
+    "name": "getUserCreatedTokens",
     "outputs": [
       {
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      }
-    ],
-    "name": "getUserStake",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -339,17 +238,12 @@ export const appABI = [
         "type": "uint256"
       }
     ],
-    "name": "getUserStakeAt",
+    "name": "getUserManagedTokenAt",
     "outputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -363,17 +257,12 @@ export const appABI = [
         "type": "address"
       }
     ],
-    "name": "getUserStakes",
+    "name": "getUserManagedTokens",
     "outputs": [
       {
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -383,64 +272,82 @@ export const appABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "rewardToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "initialOwner",
+        "name": "protocol",
         "type": "address"
       }
     ],
-    "name": "init",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "isProtocol",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "ticker",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "icon",
+        "type": "string"
+      }
+    ],
+    "name": "launch",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "user",
+        "name": "owner",
         "type": "address"
       },
       {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
       },
       {
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
+        "internalType": "string",
+        "name": "ticker",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "icon",
+        "type": "string"
       }
     ],
-    "name": "onStake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "launch",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "user",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "quantity",
-        "type": "uint256"
       }
     ],
-    "name": "onUnstake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -457,6 +364,32 @@ export const appABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "deployer",
+        "type": "address"
+      }
+    ],
+    "name": "removeDeployer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "protocol",
+        "type": "address"
+      }
+    ],
+    "name": "removeProtocol",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -466,12 +399,12 @@ export const appABI = [
   {
     "inputs": [
       {
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
+        "internalType": "bool",
+        "name": "permissionless",
+        "type": "bool"
       }
     ],
-    "name": "syncPools",
+    "name": "setPermissionless",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -493,11 +426,29 @@ export const appABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "manager",
+        "name": "newFactory",
         "type": "address"
       }
     ],
-    "name": "updateManager",
+    "name": "updateFactory",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "oldOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "updateOwner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

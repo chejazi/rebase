@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x622716Fc840929289a3f9d12b0b406faBCBFDdB0';
+export const batchReadAddress = '0x72b42C5aD8FD2E7d1B36e91B9de8caF8ED92800F';
 export const batchReadABI = [
   {
     "inputs": [
@@ -49,6 +49,35 @@ export const batchReadABI = [
         "name": "",
         "type": "string[]"
       },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "getTokenStakes",
+    "outputs": [
       {
         "internalType": "uint256[]",
         "name": "",

@@ -73,3 +73,14 @@ export interface Token {
 export interface TokenMap {
   [key: string]: Token;
 }
+
+export interface PassportSocial {
+  source: string;
+  profile_name: string;
+  profile_bio: string;
+  profile_image_url: string;
+  profile_url: string;
+  follower_count: number;
+  following_count: number;
+  passport_id: number;
+}

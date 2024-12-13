@@ -4,15 +4,18 @@ import { formatUnits, parseUnits, Address } from 'viem';
 import Select from 'react-select';
 import { Link } from "react-router-dom";
 
-import { DropdownOption, DropdownOptionLabel, NumberMap } from '../types';
+import { DropdownOption, DropdownOptionLabel, NumberMap, StringBooleanMap } from '../types';
 import Stake from './Stake';
+import Rewards from './Rewards';
 import RewardsREFI from './RewardsREFI';
+import Pool from './Pool';
 import StakeManager from './StakeManager';
 import RewardProgressBar from './RewardProgressBar';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read-v0';
+import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { rewardsAddress, lpRewardsAddress } from 'constants/abi-rebase-rewards';
 import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper';
+import { appABI } from 'constants/abi-staking-app';
 import { erc20ABI } from 'constants/abi-erc20';
 import { getTokenPrices, getTokenImage, getStakingApp } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
@@ -21,15 +24,15 @@ const wethToken = '0x4200000000000000000000000000000000000006';
 const wethRefiLPToken = '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4';
 
 const FIVE_WEEKS = 5 * 7 * 24 * 60 * 60;
-const FIFTY_WEEKS = FIVE_WEEKS * 10;
 
 const rewardPeriods = [
   { tokens: 200000000, startTime: 1717102721, duration: FIVE_WEEKS },
   { tokens: 500000000, startTime: 1718034255, duration: FIVE_WEEKS },
-  { tokens: 200000000, startTime: 1718034255, duration: FIFTY_WEEKS },
+  { tokens: 1000000, startTime: 1732304547, duration: 604800 },
 ];
 
 export const refiOptions: readonly DropdownOption[] = [
+  // { value: '0x064Cc7EBec6067745CE28FE065b45C6589620845', label: 'REFI/WETH', symbol: 'REFI/WETH', rewardPeriods: [2]},
   { value: '0x940181a94A35A4569E4529A3CDfB74e38FD98631', label: 'AERO', symbol: 'AERO', rewardPeriods: [0]},
   { value: '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', label: 'BUILD', symbol: 'BUILD', rewardPeriods: [0]},
   { value: '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed', label: 'DEGEN', symbol: 'DEGEN', rewardPeriods: [0]},
@@ -62,6 +65,7 @@ interface ProjectProps {
 
 function Project({ name }: ProjectProps) {
   const account = useAccount();
+  const userAddress = account.address;
 
   const [token, setToken] = useState<Address|null>(null);
   const [quantity, setQuantity] = useState('');
@@ -77,6 +81,7 @@ function Project({ name }: ProjectProps) {
   const options: readonly DropdownOption[] = refiOptions;
 
   const appAddress = getStakingApp(name) as Address;
+  console.log(appAddress);
 
   const { writeContract, error: writeError, data: writeData } = useWriteContract();
 
@@ -192,6 +197,28 @@ function Project({ name }: ProjectProps) {
 
   const hasAllowance = allowance >= wei;
 
+  // (New) Pools staked by user
+  const { data: userPoolsRes } = useReadContract({
+    abi: appABI,
+    address: appAddress,
+    functionName: "getUserPools",
+    args: [userAddress],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const userPools = (userPoolsRes || []) as Address[];
+  const userPoolSynced = {} as StringBooleanMap;
+  userPools.forEach(pool => userPoolSynced[pool] = true);
+
+  // Get the reward pools
+  const { data: poolsRes } = useReadContract({
+    abi: appABI,
+    address: appAddress,
+    functionName: "getTokenPools",
+    args: [token],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const pools = ((poolsRes || []) as Address[]).slice(0).reverse();
+
   const approve = () => {
     setApproving(true);
     writeContract({
@@ -274,16 +301,16 @@ function Project({ name }: ProjectProps) {
       label: `$${o.label}`,
       rewardPeriods: o.rewardPeriods,
       image: getTokenImage(o.value),
-      description: 'Uniswap Position NFTs'
+      description: 'Uniswap LP Position'
     };
   });
-
-  console.log(newOptions);
+  transformedOptions.unshift(newOptions[0]);
 
   const selectedOption = transformedOptions.filter(t => t.value == token)?.[0];
 
-  const rewards = selectedOption ? rewardPeriods[selectedOption.rewardPeriods[0]] : null;
-
+  console.log(selectedOption ? rewardPeriods[selectedOption.rewardPeriods[0]] : '-');
+  const rewards = selectedOption ? selectedOption.rewardPeriods.map(i => rewardPeriods[i]) : [];
+  // console.log(selectedOption.rewardPeriods[0], rewards);
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -317,29 +344,49 @@ function Project({ name }: ProjectProps) {
             symbol ? (
               <div>
                 {
-                  rewards ? (
-                    <RewardProgressBar
-                      rewardTotal={BigInt(rewards.tokens)}
-                      decimals={0}
-                      rewardSymbol={name}
-                      stakeSymbol={symbol}
-                      startTime={rewards.startTime}
-                      endTime={rewards.startTime + rewards.duration}
-                    />
-                  ) : null
-                }
-                <br />
-                {
                   isLPToken ? (
-                    <StakeManager
-                      token={token as Address}
-                      appAddress={appAddress}
-                      onTransaction={() => setCacheBust(cacheBust + 1)}
-                      stakeSymbol={symbol}
-                      stakeDecimals={decimals}
-                    />
+                    <div>
+                      {
+                        pools.map(p => (
+                          <Pool
+                            app={appAddress}
+                            pool={p as string}
+                            token={token as string}
+                            rewardSymbol={name}
+                            stakeSymbol={symbol}
+                            key={`pool-${p}`}
+                            synced={userPoolSynced[p]}
+                            onSync={() => setCacheBust(cacheBust + 1)}
+                            cacheBust={cacheBust}
+                          />
+                        ))
+                      }
+                      <br />
+                      <StakeManager
+                        token={token as Address}
+                        appAddress={appAddress}
+                        onTransaction={() => setCacheBust(cacheBust + 1)}
+                        stakeSymbol={symbol}
+                        stakeDecimals={decimals}
+                      />
+                    </div>
                   ) : (
                     <div>
+                      {
+                        rewards.map(r => (
+                          <div style={{ marginTop: '1em' }}>
+                            <RewardProgressBar
+                              rewardTotal={BigInt(r.tokens)}
+                              decimals={0}
+                              rewardSymbol={name}
+                              stakeSymbol={symbol}
+                              startTime={r.startTime}
+                              endTime={r.startTime + r.duration}
+                            />
+                          </div>
+                        ))
+                      }
+                      <br />
                       <div className="flex">
                         <div
                           className="flex-grow"
@@ -513,9 +560,7 @@ function Project({ name }: ProjectProps) {
               <div style={{ fontSize: '.75em' }}>
                 <br />
                 {
-                  allTVL > 0
-                  ? `Join $${prettyPrint(allTVL.toString(), 0)} worth of stakers earning $${name}. `
-                  : `Stake the tokens above to earn $${name}. `
+                  `Stake the tokens above to earn $${name}. `
                 }
                 Unstake at any time.
               </div>
@@ -544,7 +589,13 @@ function Project({ name }: ProjectProps) {
         }
         <h2>Claim</h2>
         <div className="ui-island" style={{ padding: '1em' }}>
-          <RewardsREFI />
+          {
+            isLPToken ? (
+              <Rewards tokenAddress={'0x7dbdbf103bb03c6bdc584c0699aa1800566f0f84' as Address} tokenSymbol={'REFI'} />
+            ) : (
+              <RewardsREFI />
+            )
+          }
         </div>
       </div>
     </div>
