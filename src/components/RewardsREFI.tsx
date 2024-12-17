@@ -121,36 +121,6 @@ function RewardsREFI() {
 
   return (
     <div>
-      <h3 style={{ marginTop: '0' }}>$REFI</h3>
-      <div
-        style={{
-          border: "1px solid #ccc",
-          marginBottom: "1em",
-          padding: "1em",
-          borderRadius: "12px",
-          textDecoration: "none",
-          color: "inherit",
-        }}
-      >
-        You have {prettyPrint(refiRewardsUnits, 0)} $REFI to claim.
-        <br />
-        <br />
-        <div className="flex">
-          <button
-            type="button"
-            className="buy-button flex-grow"
-            onClick={claimRefiRewards}
-            disabled={refiRewardsWei === 0n || claimingRefiRewards}
-          >
-            {claimingRefiRewards ? 'claiming' : 'claim'}
-            {
-              claimingRefiRewards ? (
-                <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-              ) : null
-            }
-          </button>
-        </div>
-      </div>
       <h3>$REBASE (Legacy)</h3>
       <div
         style={{
@@ -226,6 +196,35 @@ function RewardsREFI() {
               </button>
             )
           }
+        </div>
+      </div>
+      <div
+        style={{
+          border: "1px solid #ccc",
+          marginBottom: "1em",
+          padding: "1em",
+          borderRadius: "12px",
+          textDecoration: "none",
+          color: "inherit",
+        }}
+      >
+        You have {prettyPrint(refiRewardsUnits, 0)} $REFI to claim.
+        <br />
+        <br />
+        <div className="flex">
+          <button
+            type="button"
+            className="buy-button flex-grow"
+            onClick={claimRefiRewards}
+            disabled={refiRewardsWei === 0n || claimingRefiRewards}
+          >
+            {claimingRefiRewards ? 'claiming' : 'claim'}
+            {
+              claimingRefiRewards ? (
+                <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+              ) : null
+            }
+          </button>
         </div>
       </div>
     </div>

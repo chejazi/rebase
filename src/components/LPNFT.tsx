@@ -16,9 +16,10 @@ interface LPNFTProps {
   isWrapped?: boolean;
   symbol: string;
   onTransaction: () => void;
+  walletWei: bigint;
 }
 
-function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProps) {
+function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction, walletWei }: LPNFTProps) {
   const account = useAccount();
   const userAddress = account.address;
 
@@ -101,12 +102,11 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
   };
 
   const lpLiquidity = prettyPrint(formatUnits(liquidity, 18), 3);
-
   if (liquidity == 0n) {
     return null;
   }
   return (
-    <div style={{ marginBottom: '.5em', alignItems: 'center', borderRadius: '12px', padding: '.5em 1em', margin: '1em 0' }} className="flex secondary-bg">
+    <div style={{ marginBottom: '.5em', alignItems: 'center', borderRadius: '12px', border: '1px solid #999', padding: '.5em 1em', margin: '1em 0' }} className="flex secondary-bg">
       <div className="flex-grow">
         LP #{tokenId}&nbsp;&nbsp;<Link to={`https://app.uniswap.org/positions/v3/base/${tokenId}`} target="_blank"><i className="fa-light fa-arrow-up-right-from-square" /></Link>
         {
@@ -114,7 +114,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
             <div style={{ fontSize: '.75em' }}>
               {
                 isWrapped ? (
-                  <span>Unwrap with {lpLiquidity} ${symbol}</span>
+                  <span>{walletWei < liquidity ? 'Unstake ' : ''}{lpLiquidity} ${symbol} to unwrap</span>
                 ) : (
                   <span>{lpLiquidity} ${symbol}</span>
                 )
@@ -136,7 +136,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction }: LPNFTProp
       <div className="flex-shrink">
         {
           isWrapped ? (
-            <button className="buy-button" type="button" disabled={loading} onClick={unwrap}>
+            <button className="buy-button" type="button" disabled={loading || walletWei < liquidity} onClick={unwrap}>
               unwrap
               {
                 loading ? (

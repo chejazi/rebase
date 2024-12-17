@@ -68,6 +68,7 @@ export interface Token {
   price: number;
   appStake: bigint;
   userStake: bigint;
+  rewardsPerSecond: bigint;
 }
 
 export interface TokenMap {

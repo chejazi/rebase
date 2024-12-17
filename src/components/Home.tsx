@@ -84,7 +84,7 @@ function Home() {
                 <div className="token-name">${tokenSymbol}</div>
               </Link>
             </div>
-            <div>
+            <div style={{ fontSize: '.75em' }}>
               CA: <Link to={`https://basescan.org/token/${token}`}>{getAddress(token)}</Link>
             </div>
           </div>

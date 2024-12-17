@@ -10,19 +10,23 @@ import { erc20ABI } from 'constants/abi-erc20';
 import { prettyPrint } from 'utils/formatting';
 
 interface StakeManagerProps {
-  token: Address;
+  stakeToken: Address;
+  rewardToken: Address;
   appAddress: Address;
   onTransaction: () => void;
   stakeSymbol: string;
   stakeDecimals: number;
+  rewardsPerSecond: bigint;
 }
 
 function StakeManager({
-  token,
+  stakeToken,
+  rewardToken,
   appAddress,
   onTransaction,
   stakeSymbol,
   stakeDecimals,
+  rewardsPerSecond,
 }: StakeManagerProps) {
   const account = useAccount();
   const userAddress = account.address;
@@ -44,7 +48,7 @@ function StakeManager({
   useEffect(() => {
     setMode(0);
     setQuantity('');
-  }, [token]);
+  }, [stakeToken]);
 
   useEffect(() => {
     if (writeError) {
@@ -71,7 +75,7 @@ function StakeManager({
     abi: rebaseABI,
     address: rebaseAddress as Address,
     functionName: "getAppStake",
-    args: [appAddress, token],
+    args: [appAddress, stakeToken],
     scopeKey: `stakemanager-${cacheBust}`,
   });
   const totalStakedWei = (appStakeRes || 0n) as bigint;
@@ -81,7 +85,7 @@ function StakeManager({
     abi: rebaseABI,
     address: rebaseAddress as Address,
     functionName: "getUserAppStake",
-    args: [userAddress, appAddress, token],
+    args: [userAddress, appAddress, stakeToken],
     scopeKey: `stakemanager-${cacheBust}`,
   });
   const userStakedWei = (userAppStakeRes || 0n) as bigint;
@@ -89,7 +93,7 @@ function StakeManager({
   // User's Token Balance / Allowance
   const { data: balanceOfRes } = useReadContract({
     abi: erc20ABI,
-    address: token,
+    address: stakeToken,
     functionName: "balanceOf",
     args: [userAddress],
     scopeKey: `stakemanager-${cacheBust}`
@@ -98,7 +102,7 @@ function StakeManager({
 
   const { data: allowanceRes } = useReadContract({
     abi: erc20ABI,
-    address: token,
+    address: stakeToken,
     functionName: "allowance",
     args: [userAddress, rebaseAddress],
     scopeKey: `stakemanager-${cacheBust}`
@@ -109,7 +113,7 @@ function StakeManager({
     abi: lpWrapperABI,
     address: lpWrapperAddress,
     functionName: "isLPToken",
-    args: [token],
+    args: [stakeToken],
     scopeKey: `stakemanager-${cacheBust}`
   });
   const isLPToken = (isLPTokenRes || false) as boolean;
@@ -122,7 +126,7 @@ function StakeManager({
     setApproving(true);
     writeContract({
       abi: erc20ABI,
-      address: token,
+      address: stakeToken,
       functionName: "approve",
       args: [rebaseAddress, wei],
     });
@@ -134,7 +138,7 @@ function StakeManager({
       abi: rebaseABI,
       address: rebaseAddress,
       functionName: "stake",
-      args: [token, wei, appAddress],
+      args: [stakeToken, wei, appAddress],
     });
   };
 
@@ -155,7 +159,7 @@ function StakeManager({
       abi: rebaseABI,
       address: rebaseAddress,
       functionName: "unstake",
-      args: [token, wei, appAddress],
+      args: [stakeToken, wei, appAddress],
     });
   };
 
@@ -176,12 +180,18 @@ function StakeManager({
   const pending = staking || unstaking || stakingETH;
 
   const isAll = mode == 0 ? quantity == userWalletUnits : quantity == userStakedUnits;
-
   return (
     <div>
       {
         isLPToken ? (
-          <LPStake symbol={stakeSymbol} token={token} onTransaction={() => setCacheBust(cacheBust + 1)}/>
+          <LPStake
+            userWalletWei={userWalletWei}
+            rewardsPerSecond={rewardsPerSecond}
+            symbol={stakeSymbol}
+            stakeToken={stakeToken}
+            rewardToken={rewardToken}
+            onTransaction={() => setCacheBust(cacheBust + 1)}
+          />
         ) : null
       }
       <div className="flex">
@@ -224,7 +234,7 @@ function StakeManager({
             null
           ) : (
             <Link
-              to={`https://dexscreener.com/base/${token}`}
+              to={`https://dexscreener.com/base/${stakeToken}`}
               className="flex-grow"
               target="_blank"
               style={{

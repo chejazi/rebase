@@ -12,6 +12,7 @@ import Pool from './Pool';
 import StakeManager from './StakeManager';
 import RewardProgressBar from './RewardProgressBar';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
+import { rebaseABI as rebaseV1ABI, rebaseAddress as rebaseV1Address } from 'constants/abi-rebase-v1';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { rewardsAddress, lpRewardsAddress } from 'constants/abi-rebase-rewards';
 import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper';
@@ -22,6 +23,7 @@ import { prettyPrint } from 'utils/formatting';
 
 const wethToken = '0x4200000000000000000000000000000000000006';
 const wethRefiLPToken = '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4';
+const REFI = '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84';
 
 const FIVE_WEEKS = 5 * 7 * 24 * 60 * 60;
 
@@ -81,7 +83,6 @@ function Project({ name }: ProjectProps) {
   const options: readonly DropdownOption[] = refiOptions;
 
   const appAddress = getStakingApp(name) as Address;
-  console.log(appAddress);
 
   const { writeContract, error: writeError, data: writeData } = useWriteContract();
 
@@ -192,6 +193,25 @@ function Project({ name }: ProjectProps) {
   });
   const isLPToken = (isLPTokenRes || false) as boolean;
 
+  const { data: rewardsPerSecondRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress as Address,
+    functionName: "getRewardsPerSecond",
+    args: [appAddress, uniLPToken],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const rewardsPerSecond = (rewardsPerSecondRes || 0n) as bigint;
+
+  // Tokens staked by user in New Rebase
+  const { data: userAppStakeRes } = useReadContract({
+    abi: rebaseV1ABI,
+    address: rebaseV1Address as Address,
+    functionName: "getUserAppStake",
+    args: [userAddress, appAddress, uniLPToken],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const uniLPStake = (userAppStakeRes || 0n) as bigint;
+
   const wei = parseUnits((quantity || '0').toString(), decimals);
   const input = parseFloat(quantity || '0');
 
@@ -283,9 +303,6 @@ function Project({ name }: ProjectProps) {
     const price = prices[o.value] as number;
     const stake = stakes[i] || 0n;
     const tvl = price && stake ? (price * parseFloat(formatUnits(stake, 18))) : null;
-    if (o.value == wethRefiLPToken) {
-      console.log(prices);
-    }
     return {
       value: o.value,
       label: `$${o.label}`,
@@ -308,9 +325,7 @@ function Project({ name }: ProjectProps) {
 
   const selectedOption = transformedOptions.filter(t => t.value == token)?.[0];
 
-  console.log(selectedOption ? rewardPeriods[selectedOption.rewardPeriods[0]] : '-');
   const rewards = selectedOption ? selectedOption.rewardPeriods.map(i => rewardPeriods[i]) : [];
-  // console.log(selectedOption.rewardPeriods[0], rewards);
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -363,7 +378,9 @@ function Project({ name }: ProjectProps) {
                       }
                       <br />
                       <StakeManager
-                        token={token as Address}
+                        rewardsPerSecond={rewardsPerSecond}
+                        rewardToken={REFI as Address}
+                        stakeToken={token as Address}
                         appAddress={appAddress}
                         onTransaction={() => setCacheBust(cacheBust + 1)}
                         stakeSymbol={symbol}
@@ -372,6 +389,8 @@ function Project({ name }: ProjectProps) {
                     </div>
                   ) : (
                     <div>
+                      <br />
+                      <b>Campaigns</b>
                       {
                         rewards.map(r => (
                           <div style={{ marginTop: '1em' }}>
@@ -569,12 +588,39 @@ function Project({ name }: ProjectProps) {
         </div>
         <h2>Manage</h2>
         {
-          stakedTokens.length == 0 ? (
+          stakedTokens.length == 0 && uniLPStake == 0n ? (
             <div>
               You have no assets staked. Stake them above.
             </div>
           ) : (
             <div>
+              <div
+                key={`stake-${uniLPToken}`} onClick={() => setToken(uniLPToken as Address)}
+                className="ui-island"
+                style={{
+                  cursor: "pointer",
+                  marginBottom: "1em",
+                  padding: "1em",
+                  textDecoration: "none",
+                }}
+              >
+                <div className="flex">
+                  <div
+                    className="flex-shrink"
+                    style={{ width: '24px', height: '24px', marginRight: '.5em' }}
+                  >
+                    <img
+                      src={getTokenImage(uniLPToken)}
+                      style={{ width: '24px', height: '24px', borderRadius: '500px' }}
+                    />
+                  </div>
+                  <div className="flex-grow">
+                    <div style={{ fontWeight: 'bold' }}>
+                      {prettyPrint(formatUnits(uniLPStake, 18), 4)} $WETH/REFI
+                    </div>
+                  </div>
+                </div>
+              </div>
               {
                 (stakedTokens || []).map(t => {
                   return (
@@ -589,13 +635,8 @@ function Project({ name }: ProjectProps) {
         }
         <h2>Claim</h2>
         <div className="ui-island" style={{ padding: '1em' }}>
-          {
-            isLPToken ? (
-              <Rewards tokenAddress={'0x7dbdbf103bb03c6bdc584c0699aa1800566f0f84' as Address} tokenSymbol={'REFI'} />
-            ) : (
+              <Rewards tokenAddress={REFI as Address} tokenSymbol={'REFI'} />
               <RewardsREFI />
-            )
-          }
         </div>
       </div>
     </div>

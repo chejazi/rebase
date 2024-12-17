@@ -38,6 +38,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   const [token, setToken] = useState<Address|null>(null);
   const [cacheBust, setCacheBust] = useState(1);
   const [prices, setPrices] = useState<StringNumberMap>({});
+  const [open, setOpen] = useState(false);
 
   const { data: stakerRes } = useReadContract({
     abi: tokenABI,
@@ -68,6 +69,15 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   const symbols = tokenMetadata[1];
   const decimals = tokenMetadata[2].map(n => Number(n));
 
+  const { data: rewardsPerSecondRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress as Address,
+    functionName: "getRewardsPerSecond",
+    args: [appAddress, tokens],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const rewardsPerSecond = (rewardsPerSecondRes || tokens.map(() => 0n)) as bigint[];
+
   tokens.forEach((t, i) => tokenMap[t] = {
     name: names[i] || '',
     symbol: symbols[i] || '',
@@ -76,13 +86,14 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     price: prices[t] || 0,
     appStake: 0n,
     userStake: 0n,
+    rewardsPerSecond: rewardsPerSecond[i]
   });
 
   const tokenStr = tokens.join();
 
   useEffect(() => {
     if (tokens.length > 0) {
-      getTokenPrices(tokens).then((res: any) => {
+      getTokenPrices(tokens.concat([tokenAddress as Address])).then((res: any) => {
         setPrices(res as StringNumberMap);
       });
     }
@@ -161,7 +172,6 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   });
 
   const selectedOption = options.filter(t => t.value == token)?.[0];
-  console.log('X', options);
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
@@ -192,24 +202,35 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
           {
             token && stakeSymbol ? (
               <div>
-                {
-                  pools.map(p => (
-                    <Pool
-                      app={appAddress}
-                      pool={p as string}
-                      token={token as string}
-                      rewardSymbol={projectSymbol}
-                      stakeSymbol={stakeSymbol}
-                      key={`pool-${p}`}
-                      synced={userPoolSynced[p]}
-                      onSync={() => setCacheBust(cacheBust + 1)}
-                      cacheBust={cacheBust}
-                    />
-                  ))
-                }
+                <br />
+                <b
+                  style={{ cursor: 'pointer', display: 'block' }}
+                  onClick={() => setOpen(!open)}
+                >{
+                  open ? (<i className="fas fa-caret-down" />) : (<i className="fas fa-caret-right" />)
+                }&nbsp;&nbsp;Campaigns</b>
+                <div style={{ display: open ? 'block' : 'none'}}>
+                  {
+                    pools.map(p => (
+                      <Pool
+                        app={appAddress}
+                        pool={p as string}
+                        token={token as string}
+                        rewardSymbol={projectSymbol}
+                        stakeSymbol={stakeSymbol}
+                        key={`pool-${p}`}
+                        synced={userPoolSynced[p]}
+                        onSync={() => setCacheBust(cacheBust + 1)}
+                        cacheBust={cacheBust}
+                      />
+                    ))
+                  }
+                </div>
                 <br />
                 <StakeManager
-                  token={token as Address}
+                  rewardsPerSecond={tokenMap[token].rewardsPerSecond}
+                  rewardToken={tokenAddress as Address}
+                  stakeToken={token as Address}
                   appAddress={appAddress}
                   onTransaction={() => setCacheBust(cacheBust + 1)}
                   stakeSymbol={stakeSymbol}
