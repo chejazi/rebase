@@ -100,6 +100,9 @@ export const getUnknownToken = () => '/tokens/unknown-token.png';
 export const getStakingApp = (symbol: string) => {
   return stakingApps[symbol];
 }
+export const getStakingApps = () => {
+  return Object.keys(stakingApps).map(k => stakingApps[k]);
+};
 
 const stakingApps: StringMap = {
   // 'ANON': '0xb400A1698F7032693F8508586ceF41155ccc2b77',
@@ -110,6 +113,7 @@ const stakingApps: StringMap = {
   'BUILD': '0x4bA3f92f1d17c7a3be8749D7f1958C672502e6E5',
   'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
   'RaTcHeT': '0xE28395Dbbf3C16650321B0f87c29a3617E9C8070',
+  'LAUNCHER': '0x7D69e72154CD2f0F370DC742E89131033B9b0686',
 };
 
 export async function address2FC(address: string) {

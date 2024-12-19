@@ -5,6 +5,7 @@ import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
 import { tokenABI } from 'constants/abi-token';
 import { appABI } from 'constants/abi-staking-app';
 import WalletAppToken from './WalletAppToken';
+import Rewards from './Rewards';
 
 const missingRewardTokens: { [key: string]: string } = {
   '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81': '0xd21111c0e32df451eb61A23478B438e3d71064CB'
@@ -45,24 +46,31 @@ function WalletApp({ app }: { app: string }) {
   }
   return (
     <div style={{ position: "relative", padding: "0 .5em .5em .5em" }}>
-      <Link
-        to={`/${rewardToken}`}
+      <div
         className="ui-island"
         style={{
           display: 'block',
-          cursor: "pointer",
           marginBottom: "1em",
           padding: "1em",
-          textDecoration: "none",
         }}
       >
-        <div style={{ fontWeight: 'bold', fontSize: '1.25em' }}>Earning ${tokenSymbol}</div>
+        <Link
+          to={`/${rewardToken}`}
+          style={{
+            fontWeight: 'bold',
+            fontSize: '1.25em',
+            textDecoration: 'none'
+          }}
+        >
+          Earning ${tokenSymbol}<i style={{ marginLeft: '.5em' }} className="far fa-arrow-up-right-from-square" />
+        </Link>
         <p>
           {tokens.map((t, i) => (
             <WalletAppToken token={t} stake={stakes[i]} />
           ))}
         </p>
-      </Link>
+        <Rewards tokenSymbol={tokenSymbol} tokenAddress={rewardToken as string} />
+      </div>
     </div>
   );
 }

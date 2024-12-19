@@ -6,7 +6,7 @@ function About() {
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <h1>About</h1>
-        <p>Rebase is a protocol for distributing tokens. You start by selecting which token, e.g. $BUILD or Uniswap LP tokens, to launch your token to. Holders of those tokens can then stake to earn your token.</p>
+        <p>Rebase is a protocol for distributing tokens to stakers of tokens, particularly Uniswap LP tokens. Holders of those tokens can then stake to earn your token.</p>
         <p>There are no fees for staking / restaking / unstaking using Rebase. Staked funds can be unstaked at any time.</p>
         <p>The Rebase smart contracts have been <Link target="_blank" to="https://drive.google.com/file/d/1cl8lfKiuIit7Pjn6MJuYtBOYmaDXctds/view">audited</Link> by Hashlock to ensure staked funds are always safe.</p>
         <h2>$REFI</h2>

@@ -94,6 +94,7 @@ function LPStake({
     scopeKey: `unwrapped-positions-${cacheBust}`,
   });
   const getLPNFTs = (getLPNFTsRes || [[], [], []]) as [bigint[], Address[], Address[]];
+  console.log(getLPNFTs);
   const unwrappedTokenIds: number[] = [];
   getLPNFTs[0].forEach((tokenId, i) => {
     if (

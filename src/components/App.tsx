@@ -1,6 +1,6 @@
 import { ConnectKitButton } from 'connectkit';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
-import Home from './Home';
+import AltHome from './AltHome';
 import About from './About';
 import Wallet from './Wallet';
 import Launcher from './Launcher';
@@ -59,7 +59,7 @@ function App() {
         <Route path="/launcher" element={<Launcher />} />
         <Route path="/about" element={<About />} />
         <Route path="/wallet" element={<Wallet />} />
-        <Route path="/:token?" element={<Home />} />
+        <Route path="/:token?" element={<AltHome />} />
       </Routes>
       <br />
       <br />

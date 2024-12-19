@@ -47,7 +47,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     args: [],
   });
   const appAddress = (stakerRes || getStakingApp(projectSymbol)) as Address;
-
+  console.log(appAddress);
   const tokenMap: TokenMap = {};
 
   // Tokens (for Dropdown)

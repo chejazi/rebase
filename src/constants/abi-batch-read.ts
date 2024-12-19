@@ -1,5 +1,10 @@
-export const batchReadAddress = '0x8bb2A0E4Ed2ee5c75f9cf956988dF7b1279Da6C6';
+export const batchReadAddress = '0x89329951B46426211a9f2441692b0b75703e86bF';
 export const batchReadABI = [
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "inputs": [
       {
@@ -68,6 +73,74 @@ export const batchReadABI = [
     ],
     "name": "getRewardsPerSecond",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "stakingApps",
+        "type": "address[]"
+      }
+    ],
+    "name": "getTokenLpRewards",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakingApp",
+        "type": "address"
+      }
+    ],
+    "name": "getTokenLpRewards",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
       {
         "internalType": "uint256",
         "name": "",
@@ -188,4 +261,4 @@ export const batchReadABI = [
     "stateMutability": "view",
     "type": "function"
   }
-]
+];

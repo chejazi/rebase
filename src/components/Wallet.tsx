@@ -21,6 +21,9 @@ function Wallet() {
         <h1 style={{ textAlign: "center" }}>Assets</h1>
         <br />
         {userApps.map(a => <WalletApp app={a} />)}
+        {userApps.length == 0 ? (
+          <div style={{ textAlign: 'center' }}>Alas, nothing staked!</div>
+        ) : null}
       </div>
     </div>
   );
