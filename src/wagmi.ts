@@ -1,6 +1,7 @@
 import { getDefaultConfig } from "connectkit";
 import { http, createConfig } from "wagmi";
 import { base } from "wagmi/chains";
+import { farcasterFrame } from "@farcaster/frame-wagmi-connector";
 
 export const config = createConfig(
   getDefaultConfig({
@@ -9,8 +10,8 @@ export const config = createConfig(
     appName: "Rebase",
     transports: {
       [base.id]: http(),
-      // [mainnet.id]: http(),
     },
+    connectors: [farcasterFrame()],
   }),
 );
 
