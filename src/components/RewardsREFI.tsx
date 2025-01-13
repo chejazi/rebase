@@ -28,7 +28,8 @@ function RewardsREFI() {
       setClaimingRefiRewards(false);
       setConvertingRebase(false);
       setAllowingRefi(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setClaimingRebaseRewards(false);
       setClaimingRefiRewards(false);

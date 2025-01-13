@@ -5,7 +5,7 @@ import { Address } from 'viem';
 import { erc20ABI } from 'constants/abi-erc20';
 import { poolABI } from 'constants/abi-reward-pool';
 import { appABI } from 'constants/abi-staking-app';
-import RewardProgressBar from './RewardProgressBar';
+import RewardProgressBar from '../RewardProgressBar';
 
 interface PoolProps {
   app: Address;
@@ -33,7 +33,8 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
   useEffect(() => {
     if (writeError) {
       setJoining(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setJoining(false);
       onSync();

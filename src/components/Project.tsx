@@ -4,14 +4,15 @@ import { formatUnits, Address } from 'viem';
 import Select from 'react-select';
 
 import { DropdownOptionLabel, StringNumberMap, TokenMap, Token, StringBooleanMap } from '../types';
-import Pool from './Pool';
+import PoolCard from './Pool/PoolCard';
 import Rewards from './Rewards';
 import StakeManager from './StakeManager';
+import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { tokenABI } from 'constants/abi-token';
 import { appABI } from 'constants/abi-staking-app';
-import { getTokenPrices, getTokenImage, getStakingApp, getUnknownToken } from 'utils/data';
+import { getTokenPrices, getTokenImage, getStakingApp, getUnknownToken, getNullAddress } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
 
 const formatOptionLabel = ({ label, description, image }: DropdownOptionLabel) => (
@@ -38,16 +39,25 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   const [token, setToken] = useState<Address|null>(null);
   const [cacheBust, setCacheBust] = useState(1);
   const [prices, setPrices] = useState<StringNumberMap>({});
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
-  const { data: stakerRes } = useReadContract({
+  const { data: launcherAppRes } = useReadContract({
     abi: tokenABI,
     address: tokenAddress as Address,
     functionName: "getStaker",
     args: [],
   });
-  const appAddress = (stakerRes || getStakingApp(projectSymbol)) as Address;
-  console.log(appAddress);
+  const { data: poolDeployerAppRes } = useReadContract({
+    abi: poolDeployerABI,
+    address: poolDeployerAddress as Address,
+    functionName: "getTokenStaker",
+    args: [tokenAddress],
+  });
+  let appAddress = poolDeployerAppRes as Address;
+  if (appAddress == getNullAddress()) {
+    appAddress = (launcherAppRes || getStakingApp(projectSymbol)) as Address;
+  }
+
   const tokenMap: TokenMap = {};
 
   // Tokens (for Dropdown)
@@ -212,7 +222,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                 <div style={{ display: open ? 'block' : 'none'}}>
                   {
                     pools.map(p => (
-                      <Pool
+                      <PoolCard
                         app={appAddress}
                         pool={p as string}
                         token={token as string}

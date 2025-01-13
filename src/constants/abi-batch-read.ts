@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x89329951B46426211a9f2441692b0b75703e86bF';
+export const batchReadAddress = '0x5eca2b6536c8f46346109681C526e2f85b6aE84c';
 export const batchReadABI = [
   {
     "inputs": [],
@@ -29,6 +29,58 @@ export const batchReadABI = [
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "snapshotId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRefiSplit",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "userReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "claimed",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRefiSplitterSnapshots",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -128,22 +180,22 @@ export const batchReadABI = [
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "rewardsPerSecond",
         "type": "uint256"
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "rewardToken",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amountToken",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amountWeth",
         "type": "uint256"
       }
     ],

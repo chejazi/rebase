@@ -44,6 +44,18 @@
   outline: none;
 }
 
+.text-input {
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 3px;
+  border: 2px solid #CCC;
+  font-size: 1em;
+  padding: .5em;
+  background-color: transparent;
+  outline: none;
+}
+
+
 .buy-button {
   cursor: pointer;
   font-size: 1em;
@@ -58,6 +70,17 @@
 .buy-button[disabled] {
   opacity: .5;
   cursor: not-allowed;
+}
+
+.secondary-button {
+  cursor: pointer;
+  font-size: 1em;
+  border-radius: 500px;
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  padding: .5em 1em;
 }
 
 a {
@@ -98,11 +121,13 @@ h1, h2, h3 {
     background-color: #f8f8f8;
   }
   .nav > * {
-    padding: .5em;
+    padding: .75em 0;
     margin: 0 !important;
-    display: block;
     flex: 1 0 auto;
     text-align: center;
+    display: flex;
+    align-items: end;
+    justify-content: center;
   }
   @media (prefers-color-scheme: dark) {
     .nav {
@@ -114,6 +139,22 @@ h1, h2, h3 {
       background-color: #f8f8f8;
       color: #181818;
     }
+  }
+}
+
+.daymode {
+  display: inline-block;
+}
+.nightmode {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .daymode {
+    display: none;
+  }
+  .nightmode {
+    display: inline-block;
   }
 }
 
@@ -307,4 +348,34 @@ h1, h2, h3 {
   .secondary-bg {
     background-color: #444;
   }
+}
+
+.crowdfund-status-indicator {
+  display: inline-block;
+  vertical-align: top;
+  color: white;
+  padding: .25em .5em;
+  font-weight: bold;
+  border-radius: 2px;
+  font-size: .75em;
+  font-weight: bold;
+}
+
+.crowdfund-status-1 {
+  background-color: blue;
+}
+.crowdfund-status-1::before {
+  content: 'OPEN';
+}
+.crowdfund-status-2 {
+  background-color: red;
+}
+.crowdfund-status-2::before {
+  content: 'LIVE';
+}
+.crowdfund-status-3 {
+  background-color: #999;
+}
+.crowdfund-status-3::before {
+  content: 'CANCELLED';
 }

@@ -187,7 +187,7 @@ function LPStake({
         {
           wrappedTokenIds.length == 0 && unwrappedTokenIds.length == 0 ? (
             <div style={{ fontSize: '.75em', fontStyle: 'italic' }}>
-              None found. Create a full-range position <Link
+              None found. Create a {(fee/10000).toLocaleString()}% full-range position <Link
                 to={`https://app.uniswap.org/add/${token0 == WETH ? 'eth' : token0}/${token1 == WETH ? 'eth' : token1}/${fee}?minPrice=0.0&maxPrice=115792089237316195423570985008687907853269984665640564039457584007913129639935`}
                 target="_blank"
               >here</Link>.

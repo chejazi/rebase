@@ -46,8 +46,8 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction, walletWei }
     args: [tokenId],
   });
   const positionsRes = (positionsRawRes || [0n, NULL_ADDRESS, NULL_ADDRESS, NULL_ADDRESS, 0n, 0n, 0n, 0n]) as [bigint, Address, Address, Address, bigint, bigint, bigint, bigint];
-  const token0 = positionsRes[2] as Address;
-  const token1 = positionsRes[3] as Address;
+  // const token0 = positionsRes[2] as Address;
+  // const token1 = positionsRes[3] as Address;
   const fee = Number(positionsRes[4] as bigint);
   const minTick = Number(positionsRes[5] as bigint);
   const maxTick = Number(positionsRes[6] as bigint);
@@ -74,7 +74,8 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction, walletWei }
   useEffect(() => {
     if (writeError) {
       setLoading(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setLoading(false);
       onTransaction()
@@ -124,7 +125,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, symbol, onTransaction, walletWei }
             <div style={{ fontSize: '.75em' }}>
               {
                 inRange ? (
-                  <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Wrong fee tier, use <Link to={`https://app.uniswap.org/add/${token0}/${token1}/${feeTier}?minPrice=0&maxPrice=115792089237316195423570985008687907853269984665640564039457584007913129639935`} target="_blank">this market</Link></span>
+                  <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Wrong fee tier</span>
                 ) : (
                   <span><i className="fa-solid fa-triangle-exclamation"></i>&nbsp;&nbsp;Position ineligible - not full range.</span>
                 )

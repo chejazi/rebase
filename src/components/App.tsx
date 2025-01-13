@@ -1,13 +1,19 @@
 import { ConnectKitButton } from 'connectkit';
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
-import AltHome from './AltHome';
+import Home from './Home';
 import About from './About';
-import Wallet from './Wallet';
+import REFI from './REFI';
+import Wallet from './Wallet/Wallet';
+import PoolPage from './Pool/PoolPage';
+import CreatePool from './Pool/CreatePool';
+import BrowsePools from './Pool/BrowsePools';
 import Launcher from './Launcher';
 
 function App() {
   const location = useLocation();
 
+  const isCrowdfund = location.pathname.indexOf('/crowdpool') > -1;
+  const isRefi = location.pathname == '/refi';
   const isWallet = location.pathname == '/wallet';
   const isHome = location.pathname == '/';
   const isInfo = location.pathname == '/about';
@@ -26,15 +32,38 @@ function App() {
         }
         </Link>
         <span />
+        <Link style={{ fontSize: "1.5em", textDecoration: "none" }} to="/refi">
+        {
+          isRefi ? (
+            <img src="/logo.svg" style={{ width: '1em' }} />
+          ) : (
+            [
+              <img key="rl-d" src="/logo-stencil.png" className="daymode" style={{ width: '1em' }} />,
+              <img key="rl-n" src="/logo-stencil-white.png" className="nightmode" style={{ width: '1em' }} />
+            ]
+          )
+        }
+        </Link>
+        <span />
         <Link
           style={{ fontSize: "1.5em", textDecoration: "none" }}
           to={`/wallet`}
         >
           {
             isWallet ? (
-              <i className="fa-sharp fa-solid fa-wallet"></i>
+              <i className="fa-solid fa-wallet"></i>
             ) : (
-              <i className="fa-sharp fa-light fa-wallet"></i>
+              <i className="fa-light fa-wallet"></i>
+            )
+          }
+        </Link>
+        <span />
+        <Link style={{ fontSize: "1.5em", textDecoration: "none" }} to="/crowdpools">
+          {
+            isCrowdfund ? (
+              <i className="fa-solid fa-galaxy"></i>
+            ) : (
+              <i className="fa-light fa-galaxy"></i>
             )
           }
         </Link>
@@ -42,9 +71,9 @@ function App() {
         <Link style={{ fontSize: "1.5em", textDecoration: "none" }} to="/about">
           {
             isInfo ? (
-              <i className="fa-solid fa-circle-info"></i>
+              <i className="fa-solid fa-square-info"></i>
             ) : (
-              <i className="fa-light fa-circle-info"></i>
+              <i className="fa-light fa-square-info"></i>
             )
           }
         </Link>
@@ -56,10 +85,15 @@ function App() {
       <br />
       <br />
       <Routes>
+        <Route path="/crowdpools/token/:token" element={<BrowsePools />} />
+        <Route path="/crowdpools" element={<BrowsePools />} />
+        <Route path="/crowdpool/:poolId" element={<PoolPage />} />
+        <Route path="/crowdpool" element={<CreatePool />} />
         <Route path="/launcher" element={<Launcher />} />
+        <Route path="/refi" element={<REFI />} />
         <Route path="/about" element={<About />} />
         <Route path="/wallet" element={<Wallet />} />
-        <Route path="/:token?" element={<AltHome />} />
+        <Route path="/:token?" element={<Home />} />
       </Routes>
       <br />
       <br />

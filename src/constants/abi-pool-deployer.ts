@@ -1,7 +1,13 @@
-export const registryAddress = '0x4011AaBAD557be4858E08496Db5B1f506a4e6167';
-export const registryABI = [
+export const poolDeployerAddress = '0x88E287F89f06e44Fba8095C1C9ea73B731D3FBA2';
+export const poolDeployerABI = [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "refiSplitter",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -25,14 +31,27 @@ export const registryABI = [
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "FEE_BIPS",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "registrar",
+        "name": "funder",
         "type": "address"
       }
     ],
-    "name": "addRegistrar",
+    "name": "addFunder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -41,11 +60,31 @@ export const registryABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "user",
+        "name": "stakeToken",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "rewardToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "duration",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "curve",
+        "type": "uint256"
       }
     ],
-    "name": "autoRegister",
+    "name": "deploy",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -53,70 +92,12 @@ export const registryABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "getBio",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getNumRegistrars",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getNumSplitters",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getNumUsers",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
       }
     ],
-    "name": "getRegistrarAt",
+    "name": "getFunderAt",
     "outputs": [
       {
         "internalType": "address",
@@ -129,7 +110,7 @@ export const registryABI = [
   },
   {
     "inputs": [],
-    "name": "getRegistrars",
+    "name": "getFunders",
     "outputs": [
       {
         "internalType": "address[]",
@@ -141,14 +122,60 @@ export const registryABI = [
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "getNumFunders",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNumStakers",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getNumTokens",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPoolValidator",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "user",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "getSplitter",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRefiSplitter",
     "outputs": [
       {
         "internalType": "address",
@@ -167,7 +194,7 @@ export const registryABI = [
         "type": "uint256"
       }
     ],
-    "name": "getSplitterAt",
+    "name": "getStakerAt",
     "outputs": [
       {
         "internalType": "address",
@@ -180,7 +207,7 @@ export const registryABI = [
   },
   {
     "inputs": [],
-    "name": "getSplitters",
+    "name": "getStakers",
     "outputs": [
       {
         "internalType": "address[]",
@@ -199,7 +226,26 @@ export const registryABI = [
         "type": "uint256"
       }
     ],
-    "name": "getUserAt",
+    "name": "getTokenAt",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "getTokenStaker",
     "outputs": [
       {
         "internalType": "address",
@@ -212,7 +258,7 @@ export const registryABI = [
   },
   {
     "inputs": [],
-    "name": "getUsers",
+    "name": "getTokens",
     "outputs": [
       {
         "internalType": "address[]",
@@ -227,11 +273,11 @@ export const registryABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "registrar",
+        "name": "funder",
         "type": "address"
       }
     ],
-    "name": "isRegistrar",
+    "name": "isFunder",
     "outputs": [
       {
         "internalType": "bool",
@@ -246,30 +292,11 @@ export const registryABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "app",
+        "name": "staker",
         "type": "address"
       }
     ],
-    "name": "isSplitter",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      }
-    ],
-    "name": "isUser",
+    "name": "isStaker",
     "outputs": [
       {
         "internalType": "bool",
@@ -296,25 +323,12 @@ export const registryABI = [
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "bio",
-        "type": "string"
-      }
-    ],
-    "name": "register",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "registrar",
+        "name": "funder",
         "type": "address"
       }
     ],
-    "name": "removeRegistrar",
+    "name": "removeFunder",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -329,27 +343,12 @@ export const registryABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "stakedUser",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "stakedToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "rewardToken",
-        "type": "address"
-      },
-      {
         "internalType": "uint256",
-        "name": "rewardQuantity",
+        "name": "feeBips",
         "type": "uint256"
       }
     ],
-    "name": "rewardStakers",
+    "name": "setFeeBips",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -370,12 +369,12 @@ export const registryABI = [
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "bio",
-        "type": "string"
+        "internalType": "address",
+        "name": "stakerTemplate",
+        "type": "address"
       }
     ],
-    "name": "update",
+    "name": "updateStakerTemplate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

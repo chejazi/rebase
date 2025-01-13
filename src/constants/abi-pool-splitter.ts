@@ -1,3 +1,4 @@
+export const splitterAddress = '0x52516868524BFd3BA318C6bdc3750D01038BaF1E';
 export const splitterABI = [
   {
     "inputs": [

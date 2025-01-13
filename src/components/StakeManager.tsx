@@ -56,7 +56,8 @@ function StakeManager({
       setStaking(false);
       setStakingETH(false);
       setUnstaking(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       if (staking || unstaking) {
         setQuantity('');

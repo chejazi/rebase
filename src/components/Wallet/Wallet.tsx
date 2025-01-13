@@ -1,3 +1,4 @@
+import { ConnectKitButton } from 'connectkit';
 import { useAccount, useReadContract } from 'wagmi';
 import { Address } from 'viem';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
@@ -18,9 +19,17 @@ function Wallet() {
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
-        <h1 style={{ textAlign: "center" }}>Assets</h1>
+        <h1 style={{ textAlign: "center" }}>Staked Assets</h1>
+        {
+          !userAddress &&
+          <div style={{ textAlign: 'center' }}>
+            <div className="ui-island" style={{ display: 'inline-block' }}>
+              <ConnectKitButton />
+            </div>
+          </div>
+        }
         <br />
-        {userApps.map(a => <WalletApp app={a} />)}
+        {userApps.map(a => <WalletApp key={`app-${a}`} app={a} />)}
         {userApps.length == 0 ? (
           <div style={{ textAlign: 'center' }}>Alas, nothing staked!</div>
         ) : null}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getAddress } from 'viem'
-import { StringMap, NumberMap, StringNumberMap, PassportSocial } from '../types';
+import { StringMap, NumberMap, StringNumberMap } from '../types';
 
 const cache = {
   tokenPrices: {} as StringNumberMap,
@@ -42,6 +42,10 @@ const fetchPricesByAddress = async (addresses: string[]) => {
   }
 }
 
+export const getNullAddress = () => '0x0000000000000000000000000000000000000000';
+export const getRefiAddress = () => '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84';
+export const getWethAddress = () => '0x4200000000000000000000000000000000000006';
+
 export const getTokenPrices = async (addresses: string[]) => {
   await fetchPricesByAddress(addresses);
   return cache.tokenPrices as any;
@@ -50,7 +54,6 @@ export const getTokenPrices = async (addresses: string[]) => {
 };
 
 export const getTokenPrice = (address: string) => {
-  console.log('address', address, cache.tokenPrices);
   return cache.tokenPrices[address];
 };
 
@@ -58,9 +61,14 @@ export const getTokenImage = (address: string) => {
   return tokenImages[address] || tokenImages[getAddress(address)] || getUnknownToken();
 };
 
+export const getTokenImageNoFallback = (address: string) => {
+  return tokenImages[address] || tokenImages[getAddress(address)];
+};
+
 const tokenImages: StringMap = {
   '0x0Db510e79909666d6dEc7f5e49370838c16D950f': '/tokens/anon.png',
   '0x940181a94A35A4569E4529A3CDfB74e38FD98631': '/tokens/aero.webp',
+  '0x344FFB8ee88525D00464e886251eB5511190a5E9': '/tokens/arrow.png',
   '0x3C281A39944a2319aA653D81Cfd93Ca10983D234': '/tokens/build.png',
   '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe': '/tokens/higher.webp',
   '0xBf4Db8b7A679F89Ef38125d5F84dd1446AF2ea3B': '/tokens/bleu.webp',
@@ -77,6 +85,7 @@ const tokenImages: StringMap = {
   '0x9A6d24c02eC35ad970287eE8296D4D6552a31DbE': '/tokens/opn.webp',
   '0x01929F1aE2dc8Cac021E67987500389aE3536CeD': '/tokens/proxy.png',
   '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84': '/tokens/refi.png',
+  '0x07F41412697D14981e770b6E335051b1231A2bA8': '/tokens/stableai.png',
   '0xb488fCB23333e7bAA28D1dFd7B69a5D3a8BfeB3a': '/tokens/terminal.png',
   '0x5B5dee44552546ECEA05EDeA01DCD7Be7aa6144A': '/tokens/tn100x.png',
   '0x6888c2409D48222E2CB738eB5a805A522a96CE80': '/tokens/tree.png',
@@ -95,6 +104,12 @@ const tokenImages: StringMap = {
   '0x32abE75D06D455e8b5565D47fC3c21d0877AcDD4': '/tokens/lp-tokens.png', // Aerodrome WETH/REFI
 };
 
+export const getDefaultTokens = () => {
+  return Object.keys(tokenImages).filter(token =>
+    tokenImages[token] != '/tokens/lp-tokens.png' && tokenImages[token] != '/tokens/unknown-token.png'
+  );
+};
+
 export const getUnknownToken = () => '/tokens/unknown-token.png';
 
 export const getStakingApp = (symbol: string) => {
@@ -107,25 +122,27 @@ export const getStakingApps = () => {
 const stakingApps: StringMap = {
   // 'ANON': '0xb400A1698F7032693F8508586ceF41155ccc2b77',
   'ANON': '0xeB0E5B1aB4391936365671FF5Fa969161a1eB2B0',
-  'REFI': '0x44F9DB2D109F0910BF32394FF346ee2cEA7d26BB',
-  'JOBS': '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81',
-  'PROXY': '0xe117d1D5dFD48888e1fF7814147276Ae3aA9cd54',
   'BUILD': '0x4bA3f92f1d17c7a3be8749D7f1958C672502e6E5',
-  'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
-  'RaTcHeT': '0xE28395Dbbf3C16650321B0f87c29a3617E9C8070',
+  'JOBS': '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81',
   'LAUNCHER': '0x7D69e72154CD2f0F370DC742E89131033B9b0686',
+  'PROXY': '0xe117d1D5dFD48888e1fF7814147276Ae3aA9cd54',
+  'RaTcHeT': '0xE28395Dbbf3C16650321B0f87c29a3617E9C8070',
+  'REFI': '0x44F9DB2D109F0910BF32394FF346ee2cEA7d26BB',
+  'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
+  'WARPCASH': '0x96190BaCDe41bF416Db58A25acB01c36498da8Fd',
 };
 
 export async function address2FC(address: string) {
   const response = await axios.get(
-    'https://4dclrhwmykkwtfebciminde34y0oyibh.lambda-url.us-east-1.on.aws/?address=' + address
-    // 'https://u3cey55qwrm3ndc7ymvsajjwzq0wfvrx.lambda-url.us-east-1.on.aws/?addresses=' + addresses.join(',')
+    'https://u3cey55qwrm3ndc7ymvsajjwzq0wfvrx.lambda-url.us-east-1.on.aws/?address=' + address
   );
   if (response && response.data && !response.data.code) {
-    const user = response.data.passport.passport_socials.filter((s: PassportSocial) => s.source == 'farcaster')?.[0];
+    const user = response.data[address.toLowerCase()][0];
     if (user) {
-      return user.profile_name;
+      return {
+        username: user.username,
+        pfpUrl: user.pfp_url,
+      }
     }
   }
 }
-

@@ -5,7 +5,7 @@ import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
 import { tokenABI } from 'constants/abi-token';
 import { appABI } from 'constants/abi-staking-app';
 import WalletAppToken from './WalletAppToken';
-import Rewards from './Rewards';
+import Rewards from '../Rewards';
 
 const missingRewardTokens: { [key: string]: string } = {
   '0x9Db748Ef3d6c6d7DA2475c48d6d09a7D75251F81': '0xd21111c0e32df451eb61A23478B438e3d71064CB'
@@ -66,7 +66,7 @@ function WalletApp({ app }: { app: string }) {
         </Link>
         <p>
           {tokens.map((t, i) => (
-            <WalletAppToken token={t} stake={stakes[i]} />
+            <WalletAppToken key={`app-token-${t}-${stakes[i]}`} token={t} stake={stakes[i]} />
           ))}
         </p>
         <Rewards tokenSymbol={tokenSymbol} tokenAddress={rewardToken as string} />

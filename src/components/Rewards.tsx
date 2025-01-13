@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import { appABI } from 'constants/abi-staking-app';
+import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
 import { tokenABI } from 'constants/abi-token';
 import { erc20ABI } from 'constants/abi-erc20';
 import { prettyPrint } from 'utils/formatting';
-import { getStakingApp } from 'utils/data';
+import { getStakingApp, getNullAddress } from 'utils/data';
 
 interface RewardsProps {
   tokenSymbol: string;
@@ -28,20 +29,30 @@ function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
   useEffect(() => {
     if (writeError) {
       setClaimingRewards(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setClaimingRewards(false);
       setCacheBust(cacheBust + 1);
     }
   }, [writeError, isConfirmed]);
 
-  const { data: stakerRes } = useReadContract({
+  const { data: launcherAppRes } = useReadContract({
     abi: tokenABI,
     address: tokenAddress as Address,
     functionName: "getStaker",
     args: [],
   });
-  const appAddress = (stakerRes || getStakingApp(tokenSymbol)) as Address;
+  const { data: poolDeployerAppRes } = useReadContract({
+    abi: poolDeployerABI,
+    address: poolDeployerAddress as Address,
+    functionName: "getTokenStaker",
+    args: [tokenAddress],
+  });
+  let appAddress = poolDeployerAppRes as Address;
+  if (appAddress == getNullAddress()) {
+    appAddress = (launcherAppRes || getStakingApp(tokenSymbol)) as Address;
+  }
 
   const { data: rewardsRes } = useReadContract({
     abi: appABI,

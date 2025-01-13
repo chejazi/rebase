@@ -1,40 +1,44 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
-import { Address, getAddress } from 'viem';
+import { Address, getAddress, formatUnits } from 'viem';
 
 import Project from './Project';
 import ProjectREFI from './ProjectREFI';
 
-import { getTokenImage } from 'utils/data';
+import { getTokenImageNoFallback, getStakingApps, getTokenPrices, getTokenPrice, getUnknownToken } from 'utils/data';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-// import { launcherABI, launcherAddress } from 'constants/abi-launcher';
+import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
 import { tokenABI } from 'constants/abi-token';
 
-const hardcodedTokens = [
-  '0x1215163D2c569433b9104cC92c5dB231e7FB62A1', // $LAUNCHER
-  '0x0Db510e79909666d6dEc7f5e49370838c16D950f', // $ANON
-  '0x3C281A39944a2319aA653D81Cfd93Ca10983D234', // $BUILD
-  '0xd21111c0e32df451eb61A23478B438e3d71064CB', // $JOBS
-  '0x01929f1ae2dc8cac021e67987500389ae3536ced', // $PROXY
-  '0x1d35741c51fb615ca70e28d3321f6f01e8d8a12d', // $RaTcHeT
-  '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84', // $REFI
-  '0x1E6bA8BC42Bbd8C68Ca7E891bAc191F0e07B1d6F', // $VROOM
-];
+const WETH = '0x4200000000000000000000000000000000000006';
 
 function Home() {
   const { token } = useParams();
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const [cacheBust, setCacheBust] = useState<number>(1);
 
-  // const { data: dynamicTokensRes } = useReadContract({
-  //   abi: launcherABI,
-  //   address: launcherAddress as Address,
-  //   functionName: "getTokens",
-  //   args: [],
-  // });
-  // const dynamicTokens = (dynamicTokensRes || []) as string[];
-  // const tokenAddresses = dynamicTokens.concat(hardcodedTokens)//.concat(dynamicTokens);
-  const tokenAddresses = hardcodedTokens;
+  const { data: getStakersRes } = useReadContract({
+    abi: poolDeployerABI,
+    address: poolDeployerAddress as Address,
+    functionName: "getStakers",
+    args: [],
+  });
+  const dynamicApps = (getStakersRes || []) as string[];
+  console.log(dynamicApps);
+  const hardcodedApps = getStakingApps();
+  const apps = hardcodedApps.concat(dynamicApps);
+
+  const { data: tokenLpRewardsRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress as Address,
+    functionName: "getTokenLpRewards",
+    args: [apps],
+  });
+  const tokenLpRewards = (tokenLpRewardsRes || [[], [], [], []]) as [bigint[], string[], bigint[], bigint[]];
+  const rewardsPerSecond = tokenLpRewards[0];
+  const tokenAddresses = tokenLpRewards[1];
+  const tokenAmounts = tokenLpRewards[2];
+  const wethAmounts = tokenLpRewards[3];
 
   const { data: tokenMetadataRes } = useReadContract({
     abi: batchReadABI,
@@ -45,7 +49,7 @@ function Home() {
   const tokenMetadata = (tokenMetadataRes || [[], [], [], [], []]) as [string[], string[], bigint[], bigint[], string[]];
   // const names = tokenMetadata[0];
   const symbols = tokenMetadata[1];
-  // const decimals = tokenMetadata[2].map(n => Number(n));
+  const decimals = tokenMetadata[2].map(n => Number(n));
   const images = tokenMetadata[4];
 
   const { data: tokenSymbolRes } = useReadContract({
@@ -64,11 +68,12 @@ function Home() {
   });
   const tokenImage = (tokenImageRes || '') as string;
 
+  const serializedTokens = tokenAddresses.join();
   useEffect(() => {
-    if (refresh) {
-      setRefresh(false);
+    if (serializedTokens.length > 0) {
+      getTokenPrices(serializedTokens.split(',').concat([WETH])).then(() => setCacheBust(cacheBust + 1));
     }
-  }, [token, refresh]);
+  }, [serializedTokens]);
 
   if (token) {
     return (
@@ -80,7 +85,7 @@ function Home() {
                 to={`/${token}`}
                 className={'token-box selected'}
               >
-                <img className="token-logo" src={tokenImage || getTokenImage(token)} />
+                <img className="token-logo" src={getTokenImageNoFallback(token) || tokenImage || getUnknownToken()} />
                 <div className="token-name">${tokenSymbol}</div>
               </Link>
             </div>
@@ -93,49 +98,67 @@ function Home() {
           tokenSymbol == 'REFI' ? (
             <ProjectREFI name={tokenSymbol} />
           ) : (
-            <div>
-              {
-                !refresh ? (
-                  <Project tokenAddress={getAddress(token) as Address} projectSymbol={tokenSymbol} />
-                ) : null
-              }
-            </div>
+            <Project tokenAddress={getAddress(token) as Address} projectSymbol={tokenSymbol} />
           )
         }
       </div>
     );
   }
 
+  const apys: number[] = [];
+  const tvls: number[] = [];
+  const wethPrice = getTokenPrice(WETH);
+  const SECONDS_YEAR = 31536000n;
+  tokenAddresses.forEach((t,i) => {
+    const tokenPrice = getTokenPrice(t);
+    const rewardsUsd = tokenPrice * parseFloat(formatUnits(rewardsPerSecond[i] * SECONDS_YEAR, decimals[i]));
+    const tokenUsd = tokenPrice * parseFloat(formatUnits(tokenAmounts[i], decimals[i]));
+    const wethUsd = wethPrice * parseFloat(formatUnits(wethAmounts[i], 18));
+    if (rewardsUsd > 0) {
+      tvls.push(parseFloat((tokenUsd + wethUsd).toFixed(0)));
+      if (tokenUsd + wethUsd > 100) {
+        const apy = 100 * (rewardsUsd / (tokenUsd + wethUsd));
+        apys.push(parseFloat(apy.toFixed(2)));
+      } else {
+        apys.push(-1)
+      }
+    } else {
+      tvls.push(0);
+      apys.push(0);
+    }
+  });
+
+  // @ts-ignore: TS6133
+  const tokensSorted = apys.slice(0).map((x, i) => i).filter((i) => apys[i] != 0).sort((i, j) => apys[i] < apys[j] ? 1 : -1);
+
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ textAlign: "center" }}>
           <h1>Rebase</h1>
-          <p>Rebase is a protocol for distributing tokens to stakers. Stake eligible assets to earn the tokens below. <Link to="/about">Learn more</Link></p>
+          <p>Rebase is a protocol for rewarding LPs and stakers. <Link to="/about">Learn more</Link></p>
         </div>
-        <br />
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'left' }}>
+          <div className="flex" style={{ padding: '1em 1em', fontWeight: 'bold' }}>
+            <div className="flex-grow">Active LP Campaigns</div>
+            <div className="flex" style={{ textAlign: 'right' }}>LP APY</div>
+          </div>
           {
-            tokenAddresses.map((t, i) => {
-              const image = images[i] || getTokenImage(t);
+            tokensSorted.map((i) => {
+              const tokenAddress = tokenAddresses[i];
+              const image = getTokenImageNoFallback(tokenAddress) || images[i] || getUnknownToken();
               return (
-                <Link
-                  to={`/${t}`}
-                  className='token-box'
-                  onClick={() => setRefresh(true)}
-                >
-                  <img className="token-logo" src={image} />
-                  <div className="token-name">${symbols[i]}</div>
+                <Link to={`/${tokenAddress}`} className="flex ui-island" style={{ marginBottom: '1em', padding: '1em', alignItems: 'center', textDecoration: 'none', fontWeight: 'bold' }}>
+                  <img style={{ width: '40px', height: '40px', borderRadius: '500px' }} src={image} />
+                  <div className="flex-grow" style={{ padding: '0 1em' }}>
+                    <div>${symbols[i]}</div>
+                    <div style={{ fontSize: '.8em', fontWeight: 'normal' }}>${tvls[i].toLocaleString()} staked</div>
+                  </div>
+                  <div className="flex-shrink">{apys[i] > 0 ? `${apys[i].toLocaleString()}%` : '<1%'}</div>
                 </Link>
               );
             })
           }
-          <Link to="/launcher" className="token-box no-shadow" style={{ textDecoration: 'none' }}>
-            <div className="token-logo" style={{ textAlign: "center", margin: '0 auto' }}>
-              <i className="fal fa-list" />
-            </div>
-            <div className="token-name">Launchers</div>
-          </Link>
         </div>
       </div>
     </div>

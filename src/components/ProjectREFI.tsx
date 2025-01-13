@@ -8,7 +8,7 @@ import { DropdownOption, DropdownOptionLabel, NumberMap, StringBooleanMap } from
 import Stake from './Stake';
 import Rewards from './Rewards';
 import RewardsREFI from './RewardsREFI';
-import Pool from './Pool';
+import PoolCard from './Pool/PoolCard';
 import StakeManager from './StakeManager';
 import RewardProgressBar from './RewardProgressBar';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
@@ -102,7 +102,8 @@ function Project({ name }: ProjectProps) {
       setStaking(false);
       setStakingETH(false);
       setUnstaking(false);
-      setTimeout(() => window.alert(writeError), 1);
+      // @ts-ignore: TS2339
+      setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       if (staking || unstaking) {
         setQuantity('');
@@ -363,7 +364,7 @@ function Project({ name }: ProjectProps) {
                     <div>
                       {
                         pools.map(p => (
-                          <Pool
+                          <PoolCard
                             app={appAddress}
                             pool={p as string}
                             token={token as string}
