@@ -1,18 +1,18 @@
 {
-    "accountAssociation": {
-      "header": "eyJmaWQiOjM3MjMzOCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDEwYzA3MGY2NjkwZjFmQjIwZEIyNDcwRmJhOTJDMTUxNWJGOUE0NGQifQ",
-      "payload": "eyJkb21haW4iOiJyZWJhc2UuZmluYW5jZSJ9",
-      "signature": "MHhlM2Y2M2JjMjIyNDg1ZjMwOGNiYTgwNjUxN2ZhMDMxMTVmMTZiNDlkNTU4MWRmMWM3NTJhZDU5YWUxMGYyN2E5NTY0NWE4NzYzMDYwZTc3ZWZkY2RkYWI0OTUwYWJjYjhjY2MxYTc1NDllOWE3ZTg1ZDVlMDBkNzdkODRkMzBlODFi"
-    },
-    "frame": {
-      "version": "1",
-      "name": "Rebase",
-      "iconUrl": "https://www.rebase.finance/favicon-32x32.png",
-      "homeUrl": "https://www.rebase.finance",
-      "imageUrl": "https://www.rebase.finance/favicon-16x16.png",
-      "buttonTitle": "Stake",
-      "splashImageUrl": "https://www.rebase.finance/logo-stencil-white.png",
-      "splashBackgroundColor": "#eeccff",
-      "webhookUrl": "https://www.rebase.finance/api/webhook"
-    }
+  "accountAssociation": {
+    "header": "eyJmaWQiOjE1NzMyLCJ0eXBlIjoiY3VzdG9keSIsImtleSI6IjB4YzE3MDUzMDFlY2ViZWRiM2Y4NWNiNzkzMzBhODU1Yjg0N2Y4MDAxNiJ9",
+    "payload": "eyJkb21haW4iOiJ3d3cucmViYXNlLmZpbmFuY2UifQ",
+    "signature": "MHg4YTA3MTgxYjVlZWNlMGVmYzgxMWQyMjU2Mjk0MDBiNGIzNmUxZTc5NTVjYjU1MDdlYmNhYWZlYjlkYWVlMDdhNGQ4YzM5Zjg5MWMyZDBmZGI4MjIwNjZkZDc5ZDcyZjk4YTQ5ZDhjODAyNjk4MTQ3YjRjYTIyMzYyYmIyODkzYjFi"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Rebase",
+    "iconUrl": "https://www.rebase.finance/favicon-32x32.png",
+    "homeUrl": "https://www.rebase.finance",
+    "imageUrl": "https://www.rebase.finance/favicon-16x16.png",
+    "buttonTitle": "Stake",
+    "splashImageUrl": "https://www.rebase.finance/logo-stencil-white.png",
+    "splashBackgroundColor": "#eeccff",
+    "webhookUrl": "https://www.rebase.finance/api/webhook"
   }
+}
