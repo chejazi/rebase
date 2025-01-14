@@ -116,7 +116,8 @@ function Home() {
     const wethUsd = wethPrice * parseFloat(formatUnits(wethAmounts[i], 18));
     if (rewardsUsd > 0) {
       tvls.push(parseFloat((tokenUsd + wethUsd).toFixed(0)));
-      if (tokenUsd + wethUsd > 100) {
+      // Sometimes, tokenUsd or wethUsd can be zero, resulting in APY errononeously doubling. Exclude that below
+      if (tokenUsd > 0 && wethUsd > 0 && tokenUsd + wethUsd > 100) {
         const apy = 100 * (rewardsUsd / (tokenUsd + wethUsd));
         apys.push(parseFloat(apy.toFixed(2)));
       } else {
