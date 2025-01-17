@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { Address } from 'viem';
@@ -7,11 +8,12 @@ import PoolListItem from './PoolListItem';
 
 function BrowsePools() {
   const { address } = useParams();
+  const [filter, setFilter] = useState('getOpen');
 
   const { data: rewardIdRes } = useReadContract({
     abi: poolFunderABI,
     address: poolFunderAddress,
-    functionName: "get",
+    functionName: filter,
     args: address ? [address] : [],
     // scopeKey: `stakemanager-${cacheBust}`
   });
@@ -34,9 +36,21 @@ function BrowsePools() {
       </div>
       <br />
       <div className="flex" style={{ alignItems: 'center' }}>
-        <div className="flex-grow" style={{ fontWeight: 'bold' }}>
+        <div className="flex-shrink">
+          <select
+            className="text-input"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="get">All</option>
+            <option value="getOpen">Open</option>
+            <option value="getDeployed">Funded</option>
+            <option value="getCancelled">Closed</option>
+          </select>
+        </div>
+        <div className="flex-grow" style={{ fontWeight: 'bold', marginLeft: '1em' }}>
           {
-            tokenSymbol ? `Crowdpools for $${tokenSymbol}` : 'All crowdpools'
+            tokenSymbol ? ` for $${tokenSymbol}` : ''
           }
         </div>
         <div className="flex-shrink">

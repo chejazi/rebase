@@ -371,11 +371,11 @@ h1, h2, h3 {
   background-color: red;
 }
 .crowdfund-status-2::before {
-  content: 'LIVE';
+  content: 'FUNDED';
 }
 .crowdfund-status-3 {
   background-color: #999;
 }
 .crowdfund-status-3::before {
-  content: 'CANCELLED';
+  content: 'CLOSED';
 }

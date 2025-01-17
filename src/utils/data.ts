@@ -73,6 +73,7 @@ const tokenImages: StringMap = {
   '0x0578d8A44db98B23BF096A382e016e29a5Ce0ffe': '/tokens/higher.webp',
   '0xBf4Db8b7A679F89Ef38125d5F84dd1446AF2ea3B': '/tokens/bleu.webp',
   '0x70737489DFDf1A29b7584d40500d3561bD4Fe196': '/tokens/bored.jpeg',
+  '0x0A6a945F1A110e4baE0480D277C000F3594605A2': '/tokens/clankerindex.webp',
   '0x1d008f50FB828eF9DEbBBEAe1B71FfFe929bf317': '/tokens/clankfun.webp',
   '0x621E87AF48115122Cd96209F820fE0445C2ea90e': '/tokens/crash.webp',
   '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed': '/tokens/degen.webp',

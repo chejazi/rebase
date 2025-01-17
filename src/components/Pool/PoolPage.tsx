@@ -341,21 +341,23 @@ function PoolPage() {
         }
         {
           funderAddresses.map((a, i) => (
-            <UserIdentity key={`funder-${a}`} address={a}>
-              <div className="flex" style={{ alignItems: 'center' }}>
-                <span style={{ fontSize: '.75em' }}>{prettyPrint(formatUnits(funderQuantities[i], decimals), 0)} ${symbol}</span>
-                {
-                  (status == 1 || status == 3) && (funderQuantities[i] > 0n) && a == userAddress &&
-                  <span style={{ fontSize: '.5em', marginLeft: '.5em' }}>
-                    <button className="secondary-button" onClick={refund}>
-                      {refunding ? (
-                        <span>cancelling<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
-                      ) : 'cancel'}
-                    </button>
-                  </span>
-                }
-              </div>
-            </UserIdentity>
+            <div key={`funder-${a}`} style={{ marginBottom: '.5em' }}>
+              <UserIdentity address={a}>
+                <div className="flex" style={{ alignItems: 'center' }}>
+                  <span style={{ fontSize: '.75em' }}>{prettyPrint(formatUnits(funderQuantities[i], decimals), 0)} ${symbol}</span>
+                  {
+                    (status == 1 || status == 3) && (funderQuantities[i] > 0n) && a == userAddress &&
+                    <span style={{ fontSize: '.5em', marginLeft: '.5em' }}>
+                      <button className="secondary-button" onClick={refund}>
+                        {refunding ? (
+                          <span>cancelling<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
+                        ) : 'cancel'}
+                      </button>
+                    </span>
+                  }
+                </div>
+              </UserIdentity>
+            </div>
           ))
         }
       </div>

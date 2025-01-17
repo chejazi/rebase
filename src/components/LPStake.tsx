@@ -141,11 +141,11 @@ function LPStake({
             >
               {
                 open ? (<i className="fas fa-caret-down" />) : (<i className="fas fa-caret-right" />)
-              }&nbsp;&nbsp;APR: {apr.toFixed(2)}%
+              }&nbsp;&nbsp;APY: {apr.toFixed(2)}%
             </b>
             <div style={{ fontSize: '.75em', display: open ? 'block' : 'none' }}>
               <br />
-              <span>APR is based on the quantity and value of assets staked:</span>
+              <span>APY is based on the quantity and value of assets staked:</span>
               <br />
               {prettyPrint(token0Quantity, 3)} ${symbols[0]} (${token0Usd.toFixed(2)})
               <br />

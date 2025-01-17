@@ -82,7 +82,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   const { data: rewardsPerSecondRes } = useReadContract({
     abi: batchReadABI,
     address: batchReadAddress as Address,
-    functionName: "getRewardsPerSecond",
+    functionName: "getRewardsPerSecondBatch",
     args: [appAddress, tokens],
     scopeKey: `home-${cacheBust}`,
   });

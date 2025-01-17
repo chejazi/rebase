@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x5eca2b6536c8f46346109681C526e2f85b6aE84c';
+export const batchReadAddress = '0x7d140FC253FB4891AEf949674F947b14DD88CdDC';
 export const batchReadABI = [
   {
     "inputs": [],
@@ -99,7 +99,7 @@ export const batchReadABI = [
         "type": "address[]"
       }
     ],
-    "name": "getRewardsPerSecond",
+    "name": "getRewardsPerSecondBatch",
     "outputs": [
       {
         "internalType": "uint256[]",

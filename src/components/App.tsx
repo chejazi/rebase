@@ -85,7 +85,7 @@ function App() {
       <br />
       <br />
       <Routes>
-        <Route path="/crowdpools/token/:token" element={<BrowsePools />} />
+        <Route path="/crowdpools/token/:address" element={<BrowsePools />} />
         <Route path="/crowdpools" element={<BrowsePools />} />
         <Route path="/crowdpool/:poolId" element={<PoolPage />} />
         <Route path="/crowdpool" element={<CreatePool />} />
