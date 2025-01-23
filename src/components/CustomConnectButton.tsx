@@ -17,10 +17,6 @@ const CustomConnectButton = styled.button`
   border-radius: 11px 0 0 11px;
   transition: all 0.3s ease;
 
-  &:active {
-    transform: scale(0.98);
-  }
-
   span {
     display: inline-block;
     transition: transform 0.3s ease;
