@@ -14,18 +14,16 @@ const NULL_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
 const WETH = '0x4200000000000000000000000000000000000006';
 
 function LPStake({
+  appAddress,
   stakeToken,
-  rewardToken,
   onTransaction,
   symbol,
-  rewardsPerSecond,
   userWalletWei,
 }: {
+  appAddress: Address;
   stakeToken: Address;
-  rewardToken: Address;
   onTransaction: () => void;
   symbol: string;
-  rewardsPerSecond: bigint;
   userWalletWei: bigint;
 }) {
   const account = useAccount();
@@ -34,6 +32,7 @@ function LPStake({
   const [cacheBust, setCacheBust] = useState(1);
   const [open, setOpen] = useState(false);
 
+  // Unbundle the LP token to token0, token1
   const { data: getPairRes } = useReadContract({
     abi: lpTokenABI,
     address: stakeToken,
@@ -45,15 +44,14 @@ function LPStake({
   const token1 = getPair[1];
   const fee = Number(getPair[2]);
 
-  const { data: wrappedLiquidityRes } = useReadContract({
-    abi: batchReadABI,
-    address: batchReadAddress,
-    functionName: "getWrappedLiquidity",
-    args: [token0, token1],
-    scopeKey: `unwrapped-positions-${cacheBust}`,
-  });
-  const wrappedLiquidity = (wrappedLiquidityRes || [0n, 0n]) as [bigint, bigint];
+  useEffect(() => {
+    if (token0 != NULL_ADDRESS && token1 != NULL_ADDRESS) {
+      getTokenPrices([token0, token1, rewardToken]).then(() => setCacheBust(cacheBust + 1));
+    }
+  }, [token0, token1]);
 
+
+  // Fetch the metadata for each token
   const { data: tokenMetadataRes } = useReadContract({
     abi: batchReadABI,
     address: batchReadAddress as Address,
@@ -65,12 +63,23 @@ function LPStake({
   const symbols = tokenMetadata[1];
   const decimals = tokenMetadata[2].map(n => Number(n));
 
-  useEffect(() => {
-    if (token0 != NULL_ADDRESS && token1 != NULL_ADDRESS) {
-      getTokenPrices([token0, token1, rewardToken]).then(() => setCacheBust(cacheBust + 1));
-    }
-  }, [token0, token1]);
+  // Fetch the LP Rewards
+  // TODO: Don't assume that the LPRewards are `amountWeth`
+  const { data: getTokenLpRewardsRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress,
+    functionName: "getTokenLpRewards",
+    args: [appAddress],
+  });
+  const [
+    rewardsPerSecond,
+    rewardToken,
+    amountToken,
+    amountWeth,
+  ] = (getTokenLpRewardsRes || [0n, NULL_ADDRESS, 0n, 0n]) as [bigint, string, bigint, bigint];
 
+
+  // Fetch LP NFTs the user has wrapped
   const { data: getUserPositionsRes } = useReadContract({
     abi: lpWrapperABI,
     address: lpWrapperAddress,
@@ -86,6 +95,7 @@ function LPStake({
     }
   });
 
+  // Fetch the LP NFTs the user has not wrapped
   const { data: getLPNFTsRes } = useReadContract({
     abi: batchReadABI,
     address: batchReadAddress,
@@ -94,7 +104,6 @@ function LPStake({
     scopeKey: `unwrapped-positions-${cacheBust}`,
   });
   const getLPNFTs = (getLPNFTsRes || [[], [], []]) as [bigint[], Address[], Address[]];
-  console.log(getLPNFTs);
   const unwrappedTokenIds: number[] = [];
   getLPNFTs[0].forEach((tokenId, i) => {
     if (
@@ -110,25 +119,21 @@ function LPStake({
     setCacheBust(cacheBust + 1);
   }
 
-  const token0Quantity = formatUnits(wrappedLiquidity[0], decimals[0]);
-  const token1Quantity = formatUnits(wrappedLiquidity[1], decimals[1]);
-  let token0Usd = 0;
-  let token1Usd = 0;
-  if (getTokenPrice(token0)) {
-    token0Usd = parseFloat(token0Quantity) * getTokenPrice(token0);
-  }
-  if (getTokenPrice(token1)) {
-    token1Usd = parseFloat(token1Quantity) * getTokenPrice(token1);
-  }
-  let rewardsPerSecondUsd = 0;
-  if (rewardToken == token0) {
-    rewardsPerSecondUsd = parseFloat(formatUnits(rewardsPerSecond, decimals[0])) * getTokenPrice(token0);
-  } else if (rewardToken == token1) {
-    rewardsPerSecondUsd = parseFloat(formatUnits(rewardsPerSecond, decimals[1])) * getTokenPrice(token1);
-  }
+  const rewardTokenFirst = rewardToken.toLowerCase() == token0.toLowerCase();
+  const token0Quantity = rewardTokenFirst ? formatUnits(amountToken, decimals[0]) : formatUnits(amountWeth, decimals[0]);
+  const token1Quantity = rewardTokenFirst ? formatUnits(amountWeth, decimals[1]) : formatUnits(amountToken, decimals[1]);
+
+  const token0Price = getTokenPrice(token0);
+  const token1Price = getTokenPrice(token1);
+
+  const token0Usd = token0Price ? (parseFloat(token0Quantity) * token0Price) : 0;
+  const token1Usd = token1Price ? (parseFloat(token1Quantity) * token1Price) : 0;
+  const rewardsPerSecondUsd = rewardTokenFirst
+    ? (parseFloat(formatUnits(rewardsPerSecond, decimals[0])) * token0Price)
+    : (parseFloat(formatUnits(rewardsPerSecond, decimals[1])) * token1Price);
   const rewardsPerYearUsd = 31536000 * rewardsPerSecondUsd;
   const principalUsd = token0Usd + token1Usd;
-  const apr = rewardsPerYearUsd > 0 ? 100 * (rewardsPerYearUsd / principalUsd) : 0;
+  const apr = token0Usd > 0 && token1Usd > 0 ? 100 * (rewardsPerYearUsd / principalUsd) : 0;
 
   return (
     <div style={{ position: "relative" }}>

@@ -238,8 +238,6 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                 </div>
                 <br />
                 <StakeManager
-                  rewardsPerSecond={tokenMap[token].rewardsPerSecond}
-                  rewardToken={tokenAddress as Address}
                   stakeToken={token as Address}
                   appAddress={appAddress}
                   onTransaction={() => setCacheBust(cacheBust + 1)}
