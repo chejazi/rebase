@@ -11,22 +11,18 @@ import { prettyPrint } from 'utils/formatting';
 
 interface StakeManagerProps {
   stakeToken: Address;
-  rewardToken: Address;
   appAddress: Address;
   onTransaction: () => void;
   stakeSymbol: string;
   stakeDecimals: number;
-  rewardsPerSecond: bigint;
 }
 
 function StakeManager({
   stakeToken,
-  rewardToken,
   appAddress,
   onTransaction,
   stakeSymbol,
   stakeDecimals,
-  rewardsPerSecond,
 }: StakeManagerProps) {
   const account = useAccount();
   const userAddress = account.address;
@@ -186,11 +182,10 @@ function StakeManager({
       {
         isLPToken ? (
           <LPStake
+            appAddress={appAddress}
             userWalletWei={userWalletWei}
-            rewardsPerSecond={rewardsPerSecond}
             symbol={stakeSymbol}
             stakeToken={stakeToken}
-            rewardToken={rewardToken}
             onTransaction={() => setCacheBust(cacheBust + 1)}
           />
         ) : null

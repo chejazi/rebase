@@ -194,15 +194,6 @@ function Project({ name }: ProjectProps) {
   });
   const isLPToken = (isLPTokenRes || false) as boolean;
 
-  const { data: rewardsPerSecondRes } = useReadContract({
-    abi: batchReadABI,
-    address: batchReadAddress as Address,
-    functionName: "getRewardsPerSecond",
-    args: [appAddress, uniLPToken],
-    scopeKey: `home-${cacheBust}`,
-  });
-  const rewardsPerSecond = (rewardsPerSecondRes || 0n) as bigint;
-
   // Tokens staked by user in New Rebase
   const { data: userAppStakeRes } = useReadContract({
     abi: rebaseV1ABI,
@@ -379,8 +370,6 @@ function Project({ name }: ProjectProps) {
                       }
                       <br />
                       <StakeManager
-                        rewardsPerSecond={rewardsPerSecond}
-                        rewardToken={REFI as Address}
                         stakeToken={token as Address}
                         appAddress={appAddress}
                         onTransaction={() => setCacheBust(cacheBust + 1)}

@@ -14,7 +14,7 @@ function App() {
 
   const isCrowdfund = location.pathname.indexOf('/crowdpool') > -1;
   const isRefi = location.pathname == '/refi';
-  const isWallet = location.pathname == '/wallet';
+  // const isWallet = location.pathname == '/wallet';
   const isHome = location.pathname == '/';
   const isInfo = location.pathname == '/about';
 
@@ -45,19 +45,6 @@ function App() {
         }
         </Link>
         <span />
-        <Link
-          style={{ fontSize: "1.5em", textDecoration: "none" }}
-          to={`/wallet`}
-        >
-          {
-            isWallet ? (
-              <i className="fa-solid fa-wallet"></i>
-            ) : (
-              <i className="fa-light fa-wallet"></i>
-            )
-          }
-        </Link>
-        <span />
         <Link style={{ fontSize: "1.5em", textDecoration: "none" }} to="/crowdpools">
           {
             isCrowdfund ? (
@@ -79,8 +66,15 @@ function App() {
         </Link>
         <span />
       </div>
-      <div style={{ position: "fixed", right: ".5em", zIndex: 5 }}>
+      <div style={{ position: "fixed", right: ".5em", zIndex: 5, display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '12px' }}>
         <ConnectKitButton />
+        <span />
+        <Link
+          style={{ fontSize: "1.5em", textDecoration: "none", padding: "0 .5em", borderLeft: '1px solid #ccc' }}
+          to={`/wallet`}
+        >
+          <i className="fa-solid fa-wallet"></i>
+        </Link>
       </div>
       <br />
       <br />
