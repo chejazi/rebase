@@ -7,26 +7,33 @@ const CustomConnectButton = styled.button`
   cursor: pointer;
   position: relative;
   display: inline-block;
-  padding: 10px 15px;
+  padding: 8px 15px;
   color: var(--secondary-color);
-  background: none;
+  background: #181818;
   font-family: "Inter", sans-serif;
   font-size: 16px;
   font-weight: bold;
   border: none;
-  border-radius: 10px;
+  border-radius: 11px 0 0 11px;
   transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-  }
 
   &:active {
     transform: scale(0.98);
   }
 
+  span {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    transform: translateY(0); 
+  }
+
+  &:hover span {
+    transform: translateY(-1px);
+  }
+
   @media (prefers-color-scheme: light) {
     color: var(--primary-color);
+    background: #f8f8f8;
   } 
 
   @media (max-width: 768px) {
@@ -43,10 +50,10 @@ const CustomButton = () => {
             <CustomConnectButton onClick={show}>
               {isConnected ? (
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {ensName ?? truncatedAddress}
+                  <span>{ensName ?? truncatedAddress}</span>
                 </div>
               ) : (
-                "Connect Wallet"
+                <span>Connect Wallet</span>
               )}
             </CustomConnectButton>
           );

@@ -72,7 +72,6 @@ function App() {
           right: ".5em", 
           zIndex: 5, 
           display: 'flex', 
-          alignItems: 'center', 
           border: '1px solid #ccc', 
           borderRadius: '12px', 
         }}
@@ -84,7 +83,13 @@ function App() {
             fontSize: "1.5em", 
             textDecoration: "none", 
             padding: "0 .5em", 
-            borderLeft: '1px solid #ccc'
+            borderLeft: '1px solid #ccc',
+            backgroundColor: "var(--wallet-icon-bg-color)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderTopRightRadius: "12px", 
+            borderBottomRightRadius: "12px",
           }}
           to={`/wallet`}
         >
