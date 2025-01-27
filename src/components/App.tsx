@@ -1,4 +1,4 @@
-import { ConnectKitButton } from 'connectkit';
+import CustomConnectButton from './CustomConnectButton'
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './Home';
 import About from './About';
@@ -66,11 +66,31 @@ function App() {
         </Link>
         <span />
       </div>
-      <div style={{ position: "fixed", right: ".5em", zIndex: 5, display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '12px' }}>
-        <ConnectKitButton />
+      <div 
+        style={{ 
+          position: "fixed", 
+          right: ".5em", 
+          zIndex: 5, 
+          display: 'flex', 
+          border: '1px solid #ccc', 
+          borderRadius: '12px', 
+        }}
+      >
+        <CustomConnectButton />
         <span />
         <Link
-          style={{ fontSize: "1.5em", textDecoration: "none", padding: "0 .5em", borderLeft: '1px solid #ccc' }}
+          style={{ 
+            fontSize: "1.5em", 
+            textDecoration: "none", 
+            padding: "0 .5em", 
+            borderLeft: '1px solid #ccc',
+            backgroundColor: "var(--wallet-icon-bg-color)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderTopRightRadius: "12px", 
+            borderBottomRightRadius: "12px",
+          }}
           to={`/wallet`}
         >
           <i className="fa-solid fa-wallet"></i>
