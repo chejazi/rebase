@@ -81,6 +81,10 @@
   cursor: not-allowed;
 }
 
+.buy-button.secondary {
+  background-color: #999;
+}
+
 .secondary-button {
   cursor: pointer;
   border: 0;
@@ -279,6 +283,11 @@ h1, h2, h3 {
     background-color: #303030;
   }
 }
+.ui-island.selected {
+  box-shadow: none;
+  border: 1px solid #999;
+}
+
 
 .token-box {
   cursor: pointer;
@@ -393,4 +402,12 @@ h1, h2, h3 {
 }
 .crowdfund-status-3::before {
   content: 'CLOSED';
+}
+
+.space-right {
+  margin-right: .5em;
+}
+
+.space-left {
+  margin-left: .5em;
 }

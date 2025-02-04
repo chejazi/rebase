@@ -1,6 +1,10 @@
 import axios from 'axios';
-import { getAddress } from 'viem'
+import { getAddress, Abi, Address } from 'viem'
 import { StringMap, NumberMap, StringNumberMap } from '../types';
+// import * as rebaseV0 from 'constants/abi-rebase-v0';
+import * as rebaseV0 from 'constants/abi-rebase-v0';
+import * as rebaseV1 from 'constants/abi-rebase-v1';
+import * as rebaseV2 from 'constants/abi-rebase-v2';
 
 const cache = {
   tokenPrices: {} as StringNumberMap,
@@ -112,6 +116,7 @@ export const getDefaultTokens = () => {
 };
 
 export const getUnknownToken = () => '/tokens/unknown-token.png';
+export const getLPTokenImage = () => '/tokens/lp-tokens.png';
 
 export const getStakingApp = (symbol: string) => {
   return stakingApps[symbol];
@@ -144,6 +149,31 @@ export async function address2FC(address: string) {
         username: user.username,
         pfpUrl: user.pfp_url,
       }
+    }
+  }
+}
+
+export const getRebase = (version: number) => {
+  if (version == 0) {
+    return {
+      rebaseABI: rebaseV0.rebaseABI as Abi,
+      rebaseAddress: rebaseV0.rebaseAddress as Address,
+    }
+  }
+  else if (version == 1) {
+    return {
+      rebaseABI: rebaseV1.rebaseABI as Abi,
+      rebaseAddress: rebaseV1.rebaseAddress as Address,
+    }
+  } else if (version == 2) {
+    return {
+      rebaseABI: rebaseV2.rebaseABI as Abi,
+      rebaseAddress: rebaseV2.rebaseAddress as Address,
+    }
+  } else {
+    return {
+      rebaseABI: [] as Abi,
+      rebaseAddress: '0x0000000000000000000000000000000000000000' as Address,
     }
   }
 }

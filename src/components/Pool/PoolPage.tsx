@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+import { base } from "wagmi/chains";
 import { Address, formatUnits, parseUnits } from 'viem';
 import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
@@ -163,6 +164,7 @@ function PoolPage() {
       address: poolFunderAddress as Address,
       functionName: "fund",
       args: [poolId, wei],
+      chainId: base.id,
     });
   };
 
@@ -173,6 +175,7 @@ function PoolPage() {
       address: baseToken as Address,
       functionName: "approve",
       args: [poolFunderAddress, wei],
+      chainId: base.id,
     });
   };
 
@@ -183,6 +186,7 @@ function PoolPage() {
       address: poolFunderAddress as Address,
       functionName: "refund",
       args: [poolId],
+      chainId: base.id,
     });
   };
 
@@ -193,6 +197,7 @@ function PoolPage() {
       address: poolFunderAddress as Address,
       functionName: "cancel",
       args: [poolId],
+      chainId: base.id,
     });
   };
 
@@ -203,163 +208,166 @@ function PoolPage() {
       address: poolFunderAddress as Address,
       functionName: "deploy",
       args: [poolId],
+      chainId: base.id,
     });
   };
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
-      <div
-        className="ui-island"
-        style={{
-          marginTop: '1em',
-          padding: '1em',
-        }}
-      >
-        <div className="flex" style={{ alignItems: 'center' }}>
-          <img
-            style={{ width: '50px', height: '50px', borderRadius: '500px', marginRight: '1em' }}
-            src={image || getTokenImage(baseToken)}
-          />
-          <div className="flex-grow" style={{ fontWeight: 'bold' }}>
-            <div>{prettyPrint(formatUnits(quantity, decimals), 0)} ${symbol} over {getDurationDays(duration)}</div>
-            <div style={{ fontSize: '.75em' }}>({percentOfSupply.toFixed(2)}% of supply)</div>
+      <div style={{ padding: '0 .5em' }}>
+        <div
+          className="ui-island"
+          style={{
+            marginTop: '1em',
+            padding: '1em',
+          }}
+        >
+          <div className="flex" style={{ alignItems: 'center' }}>
+            <img
+              style={{ width: '50px', height: '50px', borderRadius: '500px', marginRight: '1em' }}
+              src={image || getTokenImage(baseToken)}
+            />
+            <div className="flex-grow" style={{ fontWeight: 'bold' }}>
+              <div>{prettyPrint(formatUnits(quantity, decimals), 0)} ${symbol} over {getDurationDays(duration)}</div>
+              <div style={{ fontSize: '.75em' }}>({percentOfSupply.toFixed(2)}% of supply)</div>
+            </div>
+            <div className={`crowdfund-status-indicator crowdfund-status-${status}`} />
           </div>
-          <div className={`crowdfund-status-indicator crowdfund-status-${status}`} />
-        </div>
-        <br />
-        <div style={{ fontSize: '.75em' }}>
-          <div>${symbol}: <Link to={`https://dexscreener.com/base/${baseToken}`} target="_blank">{baseToken}</Link></div>
-          <div>Pooled funds pay ${symbol}/${qSymbol} LPs</div>
-          <div>Once deployed, LPs earn by staking <Link to={`/${baseToken}`}>here</Link></div>
-        </div>
-        <div style={{ fontWeight: 'bold', margin: '1em 0' }}>Pool by <Username address={manager} /></div>
-        {
-          manager == userAddress ? (
-            <div>
-              {
-                status == 1 &&
-                <div>
-                  <button className="buy-button" onClick={deploy}>
-                    {deploying ? 'deploying' : 'deploy'}
+          <br />
+          <div style={{ fontSize: '.75em' }}>
+            <div>${symbol}: <Link to={`https://dexscreener.com/base/${baseToken}`} target="_blank">{baseToken}</Link></div>
+            <div>Pooled funds pay ${symbol}/${qSymbol} LPs</div>
+            <div>Once deployed, LPs earn by staking <Link to={`/${baseToken}`}>here</Link></div>
+          </div>
+          <div style={{ fontWeight: 'bold', margin: '1em 0' }}>Pool by <Username address={manager} /></div>
+          {
+            manager == userAddress ? (
+              <div>
+                {
+                  status == 1 &&
+                  <div>
+                    <button className="buy-button" onClick={deploy}>
+                      {deploying ? 'deploying' : 'deploy'}
+                      {
+                        deploying ? (
+                          <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                        ) : null
+                      }
+                    </button>
+                    &nbsp;&nbsp;
+                    <button className="secondary-button" onClick={cancel}>
+                      {cancelling ? 'cancelling' : 'cancel'}
+                      {
+                        cancelling ? (
+                          <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                        ) : null
+                      }
+                    </button>
                     {
-                      deploying ? (
-                        <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                      ) : null
-                    }
-                  </button>
-                  &nbsp;&nbsp;
-                  <button className="secondary-button" onClick={cancel}>
-                    {cancelling ? 'cancelling' : 'cancel'}
-                    {
-                      cancelling ? (
-                        <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                      ) : null
-                    }
-                  </button>
-                  {
 
-                  <div style={{ fontSize: '.75em', marginTop: '.5em' }}>Only you can deploy/cancel the pool</div>
-                  }
-                </div>
-              }
-            </div>
-          ) : (
-            <div style={{ fontSize: '.75em' }}>Only the creator can deploy the pool</div>
-          )
-        }
-      </div>
-      <div
-        className="ui-island"
-        style={{
-          marginTop: '1em',
-          padding: '1em',
-        }}
-      >
-        <div className="flex" style={{ marginBottom: '1em', alignItems: 'center' }}>
-          <div className="flex-grow">
-            <div style={{ fontWeight: 'bold' }}>Funders</div>
-          </div>
-          <div className="flex-shrink" style={{ visibility: showFund || status != 1 ? 'hidden' : 'visible' }}>
-            <button className="buy-button" onClick={() => setShowFund(true)}>Fund</button>
-          </div>
-        </div>
-        {
-          showFund &&
-          <div style={{ marginBottom: '1em' }}>
-            <div className="flex" style={{ alignItems: 'center' }}>
-              <input
-                className="flex-grow buy-input"
-                type="text"
-                name="quantity"
-                autoComplete="off"
-                placeholder="quantity"
-                style={{ width: "100%", textAlign: 'right' }}
-                value={inputQuantity}
-                onChange={(e) => {
-                  setInputQuantity(e.target.value.replace(/[^0-9.]/g, ''));
-                }}
-              />
-              <div className="flex-shrink" style={{ marginLeft: '.5em'}}>${symbol}</div>
-            </div>
-            <div className="flex" style={{ alignItems: "end", marginTop: '.5em' }}>
-              {
-                hasAllowance ? (
-                  <button
-                    type="button"
-                    className="buy-button flex-grow"
-                    onClick={fund}
-                    disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
-                  >
-                    {funding ? 'funding' : 'fund'}
-                    {
-                      funding ? (
-                        <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                      ) : null
+                    <div style={{ fontSize: '.75em', marginTop: '.5em' }}>Only you can deploy/cancel the pool</div>
                     }
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="buy-button flex-grow"
-                    onClick={approve}
-                    disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
-                  >
-                    {approving ? (
-                      <span>approving<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
-                    ) : (
-                      <span>
-                        {
-                          input > 0 && parseFloat(userWalletUnits) < input ? 'insufficient balance' : 'approve and fund'
-                        }
-                      </span>
-                    )}
-                  </button>
-                )
-              }
+                  </div>
+                }
+              </div>
+            ) : (
+              <div style={{ fontSize: '.75em' }}>Only the creator can deploy the pool</div>
+            )
+          }
+        </div>
+        <div
+          className="ui-island"
+          style={{
+            marginTop: '1em',
+            padding: '1em',
+          }}
+        >
+          <div className="flex" style={{ marginBottom: '1em', alignItems: 'center' }}>
+            <div className="flex-grow">
+              <div style={{ fontWeight: 'bold' }}>Funders</div>
+            </div>
+            <div className="flex-shrink" style={{ visibility: showFund || status != 1 ? 'hidden' : 'visible' }}>
+              <button className="buy-button" onClick={() => setShowFund(true)}>Fund</button>
             </div>
           </div>
-        }
-        {
-          funderAddresses.map((a, i) => (
-            <div key={`funder-${a}`} style={{ marginBottom: '.5em' }}>
-              <UserIdentity address={a}>
-                <div className="flex" style={{ alignItems: 'center' }}>
-                  <span style={{ fontSize: '.75em' }}>{prettyPrint(formatUnits(funderQuantities[i], decimals), 0)} ${symbol}</span>
-                  {
-                    (status == 1 || status == 3) && (funderQuantities[i] > 0n) && a == userAddress &&
-                    <span style={{ fontSize: '.5em', marginLeft: '.5em' }}>
-                      <button className="secondary-button" onClick={refund}>
-                        {refunding ? (
-                          <span>cancelling<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
-                        ) : 'cancel'}
-                      </button>
-                    </span>
-                  }
-                </div>
-              </UserIdentity>
+          {
+            showFund &&
+            <div style={{ marginBottom: '1em' }}>
+              <div className="flex" style={{ alignItems: 'center' }}>
+                <input
+                  className="flex-grow buy-input"
+                  type="text"
+                  name="quantity"
+                  autoComplete="off"
+                  placeholder="quantity"
+                  style={{ width: "100%", textAlign: 'right' }}
+                  value={inputQuantity}
+                  onChange={(e) => {
+                    setInputQuantity(e.target.value.replace(/[^0-9.]/g, ''));
+                  }}
+                />
+                <div className="flex-shrink" style={{ marginLeft: '.5em'}}>${symbol}</div>
+              </div>
+              <div className="flex" style={{ alignItems: "end", marginTop: '.5em' }}>
+                {
+                  hasAllowance ? (
+                    <button
+                      type="button"
+                      className="buy-button flex-grow"
+                      onClick={fund}
+                      disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
+                    >
+                      {funding ? 'funding' : 'fund'}
+                      {
+                        funding ? (
+                          <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                        ) : null
+                      }
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="buy-button flex-grow"
+                      onClick={approve}
+                      disabled={pending || !(input > 0 && parseFloat(userWalletUnits) >= input)}
+                    >
+                      {approving ? (
+                        <span>approving<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
+                      ) : (
+                        <span>
+                          {
+                            input > 0 && parseFloat(userWalletUnits) < input ? 'insufficient balance' : 'approve and fund'
+                          }
+                        </span>
+                      )}
+                    </button>
+                  )
+                }
+              </div>
             </div>
-          ))
-        }
+          }
+          {
+            funderAddresses.map((a, i) => (
+              <div key={`funder-${a}`} style={{ marginBottom: '.5em' }}>
+                <UserIdentity address={a}>
+                  <div className="flex" style={{ alignItems: 'center' }}>
+                    <span style={{ fontSize: '.75em' }}>{prettyPrint(formatUnits(funderQuantities[i], decimals), 0)} ${symbol}</span>
+                    {
+                      (status == 1 || status == 3) && (funderQuantities[i] > 0n) && a == userAddress &&
+                      <span style={{ fontSize: '.5em', marginLeft: '.5em' }}>
+                        <button className="secondary-button" onClick={refund}>
+                          {refunding ? (
+                            <span>cancelling<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
+                          ) : 'cancel'}
+                        </button>
+                      </span>
+                    }
+                  </div>
+                </UserIdentity>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );

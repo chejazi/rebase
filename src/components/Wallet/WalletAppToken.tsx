@@ -1,13 +1,15 @@
+import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import { prettyPrint } from 'utils/formatting';
-import { getTokenImage } from 'utils/data';
+import { getTokenImage, getLPTokenImage } from 'utils/data';
 import { tokenABI } from 'constants/abi-token';
+import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper-v1';
 
-function Wallet({ token, stake }: { token: string; stake: bigint }) {
+function Wallet({ stakeToken, stake, rewardToken }: { stakeToken: string; stake: bigint, rewardToken: string; }) {
   const { data: tokenSymbolRes } = useReadContract({
     abi: tokenABI,
-    address: token as Address,
+    address: stakeToken as Address,
     functionName: "symbol",
     args: [],
   });
@@ -15,7 +17,7 @@ function Wallet({ token, stake }: { token: string; stake: bigint }) {
 
   const { data: tokenDecimalsRes } = useReadContract({
     abi: tokenABI,
-    address: token as Address,
+    address: stakeToken as Address,
     functionName: "decimals",
     args: [],
   });
@@ -23,29 +25,44 @@ function Wallet({ token, stake }: { token: string; stake: bigint }) {
 
   const { data: tokenImageRes } = useReadContract({
     abi: tokenABI,
-    address: token as Address,
+    address: stakeToken as Address,
     functionName: "image",
     args: [],
   });
   const tokenImage = (tokenImageRes || '') as string;
 
+  const { data: isLPTokenRes } = useReadContract({
+    abi: lpWrapperABI,
+    address: lpWrapperAddress,
+    functionName: "isLPToken",
+    args: [stakeToken],
+  });
+  const isLPToken = (isLPTokenRes || false) as boolean;
+
   return (
-    <div className="flex" style={{ padding: '0em 0 .5em' }}>
+    <Link to={`/${rewardToken}`} className="flex" style={{ padding: '.25em 0', textDecoration: 'none' }}>
       <div
         className="flex-shrink"
         style={{ width: '24px', height: '24px', marginRight: '.5em' }}
       >
         <img
-          src={tokenImage || getTokenImage(token)}
+          src={isLPToken ? getLPTokenImage() : (tokenImage || getTokenImage(stakeToken))}
           style={{ width: '24px', height: '24px', borderRadius: '500px' }}
         />
       </div>
-      <div className="flex-grow">
+      <div className="flex-grow" style={{ fontWeight: 'bold' }}>
         <div>
-          {prettyPrint(formatUnits(stake, tokenDecimals), 4)} ${tokenSymbol}
+          {
+            isLPToken ? (
+              <span>${tokenSymbol} LP</span>
+            ) : (
+              <span>{prettyPrint(formatUnits(stake, tokenDecimals), 4)} ${tokenSymbol}</span>
+            )
+          }
+          <i className="fa-light fa-arrow-up-right-from-square" style={{ marginLeft: '.5em' }}/>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 

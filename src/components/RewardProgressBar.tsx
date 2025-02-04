@@ -26,7 +26,7 @@ function RewardProgressBar({
   return (
     <div>
       <div style={{ fontSize: '.8em' }}>
-        <div>{prettyPrint(formatUnits(rewardTotal, decimals), 0)} ${rewardSymbol} to stakers ({(progress).toFixed(0)}% complete)</div>
+        <div>{prettyPrint(formatUnits(rewardTotal, decimals), 0)} ${rewardSymbol} to stakers</div>
         <div className="loading-bar">
           <div className="loading-progress" style={{ width: `${progress}%`, minWidth: '1em' }} />
         </div>
@@ -34,7 +34,7 @@ function RewardProgressBar({
           done ? (
             <div>Ended {new Date(endTime * 1000).toLocaleString()}</div>
           ) : (
-            <div>Active until {new Date(endTime * 1000).toLocaleString()}</div>
+            <div>Active until {new Date(endTime * 1000).toLocaleString()} ({(progress).toFixed(0)}% complete)</div>
           )
         }
       </div>

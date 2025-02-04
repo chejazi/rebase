@@ -61,6 +61,8 @@ export interface StringBooleanMap {
 }
 
 export interface Token {
+  staker?: string;
+  token?: string;
   name: string;
   symbol: string;
   decimals: number;

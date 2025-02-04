@@ -30,40 +30,42 @@ function BrowsePools() {
 
   return (
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1>Crowdpools</h1>
-        <p>Crowdfund an LP incentive campaign for a token.</p>
+      <div style={{ padding: '0 .5em' }}>
+        <div style={{ textAlign: 'center' }}>
+          <h1>Crowdpools</h1>
+          <p>Crowdfund an LP incentive campaign for a token.</p>
+        </div>
+        <br />
+        <div className="flex" style={{ alignItems: 'center' }}>
+          <div className="flex-shrink">
+            <select
+              className="text-input"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="get">All</option>
+              <option value="getOpen">Open</option>
+              <option value="getDeployed">Funded</option>
+              <option value="getCancelled">Closed</option>
+            </select>
+          </div>
+          <div className="flex-grow" style={{ fontWeight: 'bold', marginLeft: '1em' }}>
+            {
+              tokenSymbol ? ` for $${tokenSymbol}` : ''
+            }
+          </div>
+          <div className="flex-shrink">
+            <Link to="/crowdpool">
+              <button className="secondary-button">Create</button>
+            </Link>
+          </div>
+        </div>
+        {
+          rewardIds.map(id => (
+            <PoolListItem key={`pool-${id}`} poolId={id} />
+          ))
+        }
       </div>
-      <br />
-      <div className="flex" style={{ alignItems: 'center' }}>
-        <div className="flex-shrink">
-          <select
-            className="text-input"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <option value="get">All</option>
-            <option value="getOpen">Open</option>
-            <option value="getDeployed">Funded</option>
-            <option value="getCancelled">Closed</option>
-          </select>
-        </div>
-        <div className="flex-grow" style={{ fontWeight: 'bold', marginLeft: '1em' }}>
-          {
-            tokenSymbol ? ` for $${tokenSymbol}` : ''
-          }
-        </div>
-        <div className="flex-shrink">
-          <Link to="/crowdpool">
-            <button className="secondary-button">Create</button>
-          </Link>
-        </div>
-      </div>
-      {
-        rewardIds.map(id => (
-          <PoolListItem key={`pool-${id}`} poolId={id} />
-        ))
-      }
     </div>
   );
 }

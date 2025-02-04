@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { Address } from 'viem';
 
 import { getWethAddress } from 'utils/data';
@@ -90,6 +91,7 @@ function CreatePool() {
       address: poolFunderAddress,
       functionName: "create",
       args: [token, getWethAddress(), seconds, 1],
+      chainId: base.id,
     });
   };
 

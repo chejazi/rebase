@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { formatUnits, parseUnits, Address } from 'viem';
 import { Link } from "react-router-dom";
 
@@ -117,6 +118,7 @@ function REFI() {
       address: stakeToken,
       functionName: "approve",
       args: [rebaseAddress, wei],
+      chainId: base.id,
     });
   };
 
@@ -127,6 +129,7 @@ function REFI() {
       address: rebaseAddress,
       functionName: "stake",
       args: [stakeToken, wei, splitterAddress],
+      chainId: base.id,
     });
   };
 
@@ -137,6 +140,7 @@ function REFI() {
       address: rebaseAddress,
       functionName: "unstake",
       args: [stakeToken, wei, splitterAddress],
+      chainId: base.id,
     });
   };
 

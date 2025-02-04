@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { formatUnits, Address } from 'viem';
 import { appABI } from 'constants/abi-staking-app';
-import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
 import { tokenABI } from 'constants/abi-token';
-import { erc20ABI } from 'constants/abi-erc20';
 import { prettyPrint } from 'utils/formatting';
-import { getStakingApp, getNullAddress } from 'utils/data';
+import { getTokenImage } from 'utils/data';
 
 interface RewardsProps {
-  tokenSymbol: string;
-  tokenAddress: string;
+  rewardSymbol: string;
+  rewardToken: string;
+  appAddress: string;
 }
 
-function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
+function Rewards({ rewardSymbol, rewardToken, appAddress }: RewardsProps) {
   const account = useAccount();
   const userAddress = account.address;
-
   const [claimingRewards, setClaimingRewards] = useState(false);
   const [cacheBust, setCacheBust] = useState(1);
 
@@ -37,63 +36,54 @@ function Rewards({ tokenSymbol, tokenAddress }: RewardsProps) {
     }
   }, [writeError, isConfirmed]);
 
-  const { data: launcherAppRes } = useReadContract({
-    abi: tokenABI,
-    address: tokenAddress as Address,
-    functionName: "getStaker",
-    args: [],
-  });
-  const { data: poolDeployerAppRes } = useReadContract({
-    abi: poolDeployerABI,
-    address: poolDeployerAddress as Address,
-    functionName: "getTokenStaker",
-    args: [tokenAddress],
-  });
-  let appAddress = poolDeployerAppRes as Address;
-  if (appAddress == getNullAddress()) {
-    appAddress = (launcherAppRes || getStakingApp(tokenSymbol)) as Address;
-  }
-
   const { data: rewardsRes } = useReadContract({
     abi: appABI,
-    address: appAddress,
+    address: appAddress as Address,
     functionName: "getRewards",
     args: [userAddress],
     scopeKey: `home-${cacheBust}`
   });
   const rewardsWei = (rewardsRes || 0n) as bigint;
 
-  const { data: balanceOfRes } = useReadContract({
-    abi: erc20ABI,
-    address: tokenAddress as Address,
-    functionName: "balanceOf",
-    args: [userAddress],
-    scopeKey: `home-${cacheBust}`
+  const { data: tokenImageRes } = useReadContract({
+    abi: tokenABI,
+    address: rewardToken as Address,
+    functionName: "image",
+    args: [],
   });
-  const balanceWei = (balanceOfRes || 0n) as bigint;
+  const tokenImage = (tokenImageRes || '') as string;
 
   const claimRewards = () => {
     setClaimingRewards(true);
     writeContract({
       abi: appABI,
-      address: appAddress,
+      address: appAddress as Address,
       functionName: "claimRewards",
       args: [],
+      chainId: base.id,
     });
   };
 
   const rewardsUnits = parseFloat(formatUnits(rewardsWei, 18));
-  const balanceUnits = parseFloat(formatUnits(balanceWei, 18));
 
   return (
     <div>
-      You own {prettyPrint(balanceUnits.toFixed(4), balanceUnits < 10 ? 3 : 0)} ${tokenSymbol} and have {prettyPrint(rewardsUnits.toFixed(4), rewardsUnits < 10 ? 3 : 0)} ${tokenSymbol} to claim.
-      <br />
-      <br />
-      <div className="flex">
+      <div className="flex" style={{ alignItems: 'center' }}>
+        <div
+          className="flex-shrink"
+          style={{ width: '24px', height: '24px', marginRight: '.5em' }}
+        >
+          <img
+            src={tokenImage || getTokenImage(rewardToken)}
+            style={{ width: '24px', height: '24px', borderRadius: '500px' }}
+          />
+        </div>
+        <div className="flex-grow" style={{ fontWeight: 'bold' }}>
+          {prettyPrint(rewardsUnits.toFixed(4), rewardsUnits < 10 ? 3 : 0)} ${rewardSymbol}
+        </div>
         <button
           type="button"
-          className="buy-button flex-grow"
+          className="buy-button flex-shrink"
           onClick={claimRewards}
           disabled={rewardsWei === 0n || claimingRewards}
         >

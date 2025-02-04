@@ -4,9 +4,9 @@ import { useReadContract } from 'wagmi';
 import { Address, getAddress, formatUnits } from 'viem';
 
 import Project from './Project';
-import ProjectREFI from './ProjectREFI';
 
 import { getTokenImageNoFallback, getStakingApps, getTokenPrices, getTokenPrice, getUnknownToken } from 'utils/data';
+import { prettyPrintTruncated } from 'utils/formatting';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
 import { tokenABI } from 'constants/abi-token';
@@ -14,7 +14,11 @@ import { tokenABI } from 'constants/abi-token';
 const WETH = '0x4200000000000000000000000000000000000006';
 
 function Home() {
-  const { token } = useParams();
+  const { token: rawToken } = useParams();
+  let token = rawToken;
+  if (token) {
+    token = getAddress(token.toLowerCase());
+  }
   const [cacheBust, setCacheBust] = useState<number>(1);
 
   const { data: getStakersRes } = useReadContract({
@@ -24,7 +28,6 @@ function Home() {
     args: [],
   });
   const dynamicApps = (getStakersRes || []) as string[];
-  console.log(dynamicApps);
   const hardcodedApps = getStakingApps();
   const apps = hardcodedApps.concat(dynamicApps);
 
@@ -58,7 +61,7 @@ function Home() {
     functionName: "symbol",
     args: [],
   });
-  const tokenSymbol = (tokenSymbolRes || '') as string;
+  const tokenSymbol = (tokenSymbolRes || '...') as string;
 
   const { data: tokenImageRes } = useReadContract({
     abi: tokenABI,
@@ -94,13 +97,7 @@ function Home() {
             </div>
           </div>
         </div>
-        {
-          tokenSymbol == 'REFI' ? (
-            <ProjectREFI name={tokenSymbol} />
-          ) : (
-            <Project tokenAddress={getAddress(token) as Address} projectSymbol={tokenSymbol} />
-          )
-        }
+        <Project tokenAddress={getAddress(token) as Address} projectSymbol={tokenSymbol} />
       </div>
     );
   }
@@ -119,7 +116,7 @@ function Home() {
       // Sometimes, tokenUsd or wethUsd can be zero, resulting in APY errononeously doubling. Exclude that below
       if (tokenUsd > 0 && wethUsd > 0 && tokenUsd + wethUsd > 100) {
         const apy = 100 * (rewardsUsd / (tokenUsd + wethUsd));
-        apys.push(parseFloat(apy.toFixed(2)));
+        apys.push(parseFloat(apy.toFixed(0)));
       } else {
         apys.push(-1)
       }
@@ -130,7 +127,7 @@ function Home() {
   });
 
   // @ts-ignore: TS6133
-  const tokensSorted = apys.slice(0).map((x, i) => i).filter((i) => apys[i] != 0).sort((i, j) => apys[i] < apys[j] ? 1 : -1);
+  const tokensSorted = apys.slice(0).map((x, i) => i).filter((i) => apys[i] > 0).sort((i, j) => tvls[i] < tvls[j] ? 1 : -1);
 
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
@@ -153,7 +150,7 @@ function Home() {
                   <img style={{ width: '40px', height: '40px', borderRadius: '500px' }} src={image} />
                   <div className="flex-grow" style={{ padding: '0 1em' }}>
                     <div>${symbols[i]}</div>
-                    <div style={{ fontSize: '.8em', fontWeight: 'normal' }}>${tvls[i].toLocaleString()} staked</div>
+                    <div style={{ fontSize: '.8em', fontWeight: 'normal' }}>${prettyPrintTruncated(tvls[i], 0)} staked</div>
                   </div>
                   <div className="flex-shrink">{apys[i] > 0 ? `${apys[i].toLocaleString()}%` : '<1%'}</div>
                 </Link>

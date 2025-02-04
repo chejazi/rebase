@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { Address } from 'viem';
 
 import { erc20ABI } from 'constants/abi-erc20';
-import { poolABI } from 'constants/abi-reward-pool';
 import { appABI } from 'constants/abi-staking-app';
+import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import RewardProgressBar from '../RewardProgressBar';
 
 interface PoolProps {
@@ -42,38 +43,24 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
   }, [writeError, isConfirmed]);
 
 
-  const poolAddress = pool as Address;
-
-  const { data: startTimeRes } = useReadContract({
-    abi: poolABI,
-    address: poolAddress,
-    functionName: "getStartTime",
-    args: [],
+  const { data: poolDetailsRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress,
+    functionName: "getPoolDetails",
+    args: [pool],
   });
-  const startTime = Number(startTimeRes || 0);
-
-  const { data: endTimeRes } = useReadContract({
-    abi: poolABI,
-    address: poolAddress,
-    functionName: "getEndTime",
-    args: [],
-  });
-  const endTime = Number(endTimeRes || 0);
-
-  const { data: rewardTotalRes } = useReadContract({
-    abi: poolABI,
-    address: poolAddress,
-    functionName: "getTotalReward",
-    args: [],
-    scopeKey: `pool-${cacheBust}`,
-  });
-  const rewardTotal = (rewardTotalRes || 0n) as bigint;
+  const poolDetails = (poolDetailsRes as [bigint, bigint, bigint]) || [0n,0n,0n];
+  const [startTime, endTime, rewardTotal] = [
+    Number(poolDetails[0] as bigint),
+    Number(poolDetails[1] as bigint),
+    BigInt(poolDetails[2] as bigint),
+  ];
 
   const { data: stakeTotalRes } = useReadContract({
-    abi: appABI,
-    address: app,
+    abi: batchReadABI,
+    address: batchReadAddress,
     functionName: "getUserStake",
-    args: [userAddress, token],
+    args: [app, token, userAddress],
     scopeKey: `pool-${cacheBust}`,
   });
   const stakeTotal = (stakeTotalRes || 0n) as bigint;
@@ -94,8 +81,11 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
       address: app,
       functionName: "syncPools",
       args: [[token]],
+      chainId: base.id,
     });
   };
+
+  const now = Math.floor(new Date().getTime() / 1000);
 
   return (
     <div className="flex" style={{ alignItems: 'center', marginTop: '1em' }}>
@@ -110,7 +100,7 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
         />
       </div>
       {
-        !synced && userAddress && stakeTotal > 0 ? (
+        !synced && userAddress && stakeTotal > 0 && now < endTime ? (
           <div className="flex-shrink">
             <button
               type="button"
@@ -119,7 +109,7 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
               disabled={joining}
               style={{ marginLeft: '.5em'}}
             >
-              {joining ? 'adding' : 'add'}
+              {joining ? 'joining' : 'join'}
               {
                 joining ? (
                   <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>

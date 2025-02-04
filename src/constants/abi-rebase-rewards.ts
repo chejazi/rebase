@@ -1,5 +1,5 @@
 export const lpRewardsAddress = '0xe75e4c53c8680666f9557B52892ad5166Ebc62B9';
-export const rewardsAddress = '0x00547432fcf53c3ccd1ce95b886ef78eb06417f0';
+export const rewardsAddress = '0x00547432Fcf53c3CCD1CE95b886eF78Eb06417f0';
 export const rewardsABI = [
   {
     "inputs": [],

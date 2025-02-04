@@ -1,9 +1,57 @@
-export const batchReadAddress = '0x7d140FC253FB4891AEf949674F947b14DD88CdDC';
+export const batchReadAddress = '0x653227BcE6Df217Cf8787e79Fa3061625889B842';
 export const batchReadABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "getAppStake",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "stake",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "apps",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "getAppStakes",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "stakes",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -29,6 +77,97 @@ export const batchReadABI = [
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      }
+    ],
+    "name": "getPoolDetails",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalReward",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "staker",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "stakeToken",
+        "type": "address"
+      }
+    ],
+    "name": "getPools",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "pools",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      }
+    ],
+    "name": "getRebaseVersion",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "version",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      }
+    ],
+    "name": "getRebaseVersionAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -94,6 +233,30 @@ export const batchReadABI = [
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "stakingToken",
+        "type": "address"
+      }
+    ],
+    "name": "getRewardsPerSecond",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "rewardsPerSecond",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      },
+      {
         "internalType": "address[]",
         "name": "stakingTokens",
         "type": "address[]"
@@ -113,22 +276,110 @@ export const batchReadABI = [
   {
     "inputs": [
       {
+        "internalType": "address[]",
+        "name": "apps",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "stakingTokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "getRewardsPerSecondBatchV2",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "app",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "stakingToken",
+        "name": "pair",
         "type": "address"
       }
     ],
-    "name": "getRewardsPerSecond",
+    "name": "getStakedLiquidity",
     "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint24",
+        "name": "",
+        "type": "uint24"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "apps",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "pairs",
+        "type": "address[]"
+      }
+    ],
+    "name": "getStakedLiquidityBatch",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint24[]",
+        "name": "",
+        "type": "uint24[]"
       }
     ],
     "stateMutability": "view",
@@ -288,26 +539,103 @@ export const batchReadABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "token0",
+        "name": "user",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "token1",
+        "name": "token",
         "type": "address"
       }
     ],
-    "name": "getWrappedLiquidity",
+    "name": "getUserBalance",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "amount0",
+        "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
       },
       {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "getUserBalances",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "app",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserStake",
+    "outputs": [
+      {
         "internalType": "uint256",
-        "name": "amount1",
+        "name": "stake",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "apps",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "users",
+        "type": "address[]"
+      }
+    ],
+    "name": "getUserStakes",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "stakes",
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",

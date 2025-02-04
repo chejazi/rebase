@@ -1,6 +1,5 @@
 import { useAccount, useReadContract } from 'wagmi';
 import { Address } from 'viem';
-import { Link } from 'react-router-dom';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
 import { tokenABI } from 'constants/abi-token';
 import { appABI } from 'constants/abi-staking-app';
@@ -21,7 +20,7 @@ function WalletApp({ app }: { app: string }) {
     functionName: "getRewardToken",
     args: [],
   });
-  const rewardToken = rewardTokenRes || missingRewardTokens[app];
+  const rewardToken = (rewardTokenRes || missingRewardTokens[app]) as Address;
 
   const { data: userAppStakesRes } = useReadContract({
     abi: rebaseABI,
@@ -33,43 +32,35 @@ function WalletApp({ app }: { app: string }) {
   const tokens = userAppStakes[0];
   const stakes = userAppStakes[1];
 
-  const { data: tokenSymbolRes } = useReadContract({
+  const { data: rewardSymbolRes } = useReadContract({
     abi: tokenABI,
     address: rewardToken as Address,
     functionName: "symbol",
     args: [],
   });
-  const tokenSymbol = (tokenSymbolRes || '') as string;
+  const rewardSymbol = (rewardSymbolRes || '') as string;
 
-  if (!tokenSymbol) {
+  if (!rewardSymbol) {
     return null;
   }
   return (
-    <div style={{ position: "relative", padding: "0 .5em .5em .5em" }}>
+    <div style={{ position: "relative" }}>
       <div
         className="ui-island"
         style={{
           display: 'block',
           marginBottom: "1em",
-          padding: "1em",
+          padding: '1em 0',
         }}
       >
-        <Link
-          to={`/${rewardToken}`}
-          style={{
-            fontWeight: 'bold',
-            fontSize: '1.25em',
-            textDecoration: 'none'
-          }}
-        >
-          Earning ${tokenSymbol}<i style={{ marginLeft: '.5em' }} className="far fa-arrow-up-right-from-square" />
-        </Link>
-        <p>
+        <div style={{ padding: '0 1em' }}>
           {tokens.map((t, i) => (
-            <WalletAppToken key={`app-token-${t}-${stakes[i]}`} token={t} stake={stakes[i]} />
+            <WalletAppToken key={`app-token-${t}-${stakes[i]}`} stakeToken={t} stake={stakes[i]} rewardToken={rewardToken} />
           ))}
-        </p>
-        <Rewards tokenSymbol={tokenSymbol} tokenAddress={rewardToken as string} />
+        </div>
+        <div style={{ borderTop: '1px solid #ddd', padding: '1em 1em 0 1em', marginTop: '1em' }}>
+          <Rewards rewardSymbol={rewardSymbol} rewardToken={rewardToken as string} appAddress={app} />
+        </div>
       </div>
     </div>
   );

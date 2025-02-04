@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { Address, formatUnits } from 'viem';
 import { splitterAddress, splitterABI } from 'constants/abi-pool-splitter';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
@@ -66,6 +67,7 @@ function RewardListItem({ snapshotId }: { snapshotId: number }) {
       address: splitterAddress as Address,
       functionName: "claim",
       args: [userAddress, [getRefiAddress()], [[snapshotId]]],
+      chainId: base.id,
     });
   };
 

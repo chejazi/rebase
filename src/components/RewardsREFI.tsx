@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { base } from "wagmi/chains";
 import { formatUnits, Address } from 'viem';
 import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
 import { rewardsAddress, lpRewardsAddress, rewardsABI } from 'constants/abi-rebase-rewards';
@@ -82,6 +83,7 @@ function RewardsREFI() {
       address: rewardsAddress,
       functionName: "claimRewards",
       args: [],
+      chainId: base.id,
     });
   };
 
@@ -92,6 +94,7 @@ function RewardsREFI() {
       address: lpRewardsAddress,
       functionName: "claimRewards",
       args: [],
+      chainId: base.id,
     });
   };
 
@@ -102,6 +105,7 @@ function RewardsREFI() {
       address: rebaseAddress as Address,
       functionName: "approve",
       args: [refiAddress, UINT256MAX],
+      chainId: base.id,
     });
   };
 
@@ -112,6 +116,7 @@ function RewardsREFI() {
       address: refiAddress,
       functionName: "convert",
       args: [],
+      chainId: base.id,
     });
   };
 
