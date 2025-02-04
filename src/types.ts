@@ -66,6 +66,7 @@ export interface Token {
   name: string;
   symbol: string;
   decimals: number;
+  isLPToken?: boolean;
   image: string;
   price: number;
   appStake: bigint;

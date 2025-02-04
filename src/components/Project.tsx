@@ -14,7 +14,7 @@ import { tokenABI } from 'constants/abi-token';
 import { refiAddress } from 'constants/abi-refi';
 import { appABI } from 'constants/abi-staking-app';
 import { rewardTargetsABI, rewardTargetsAddress } from 'constants/abi-reward-targets';
-import { getTokenPrices, getTokenImage, getStakingApp, getNullAddress } from 'utils/data';
+import { getTokenPrices, getTokenImage, getLPTokenImage, getStakingApp, getNullAddress } from 'utils/data';
 import { prettyPrint } from 'utils/formatting';
 
 interface ProjectProps {
@@ -106,6 +106,16 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
   }, [tokens, tokenStr]);
 
   // Tokens staked by all users
+  const { data: isLPTokenRes } = useReadContract({
+    abi: batchReadABI,
+    address: batchReadAddress as Address,
+    functionName: "isLPTokenBatch",
+    args: [tokens],
+    scopeKey: `home-${cacheBust}`,
+  });
+  const isLPToken = (isLPTokenRes || []) as boolean[];
+
+  // Tokens staked by all users
   const { data: appStakesRes } = useReadContract({
     abi: batchReadABI,
     address: batchReadAddress as Address,
@@ -131,7 +141,8 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
     name: names[i] || '',
     symbol: symbols[i] || '',
     decimals: decimals[i] || 18,
-    image: getTokenImage(t),
+    isLPToken: isLPToken[i],
+    image: isLPToken[i] ? getLPTokenImage() : getTokenImage(t),
     price: prices[t] || 0,
     appStake: appStakes[i] || 0n,
     userStake: userStakes[i] || 0n,
@@ -389,7 +400,13 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
                       </div>
                       <div className="flex-grow">
                         <div style={{ fontWeight: 'bold' }}>
-                          {prettyPrint(formatUnits(t.userStake, t.decimals), 4)} ${t.symbol}
+                          {
+                            t.isLPToken ? (
+                              <span>Wrapped {t.symbol} LP</span>
+                            ) : (
+                              <span>{prettyPrint(formatUnits(t.userStake, t.decimals), 4)} ${t.symbol}</span>
+                            )
+                          }
                         </div>
                       </div>
                     </div>

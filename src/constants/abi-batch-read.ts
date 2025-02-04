@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x653227BcE6Df217Cf8787e79Fa3061625889B842';
+export const batchReadAddress = '0x6Bc1082cF821c41BEB3E82D6aDb64F2f95eD1D18';
 export const batchReadABI = [
   {
     "inputs": [],
@@ -636,6 +636,44 @@ export const batchReadABI = [
         "internalType": "uint256[]",
         "name": "stakes",
         "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "isLPToken",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "isLPTokenBatch",
+    "outputs": [
+      {
+        "internalType": "bool[]",
+        "name": "",
+        "type": "bool[]"
       }
     ],
     "stateMutability": "view",
