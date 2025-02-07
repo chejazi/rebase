@@ -133,9 +133,23 @@ function Home() {
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ textAlign: "center" }}>
-          <h1>Rebase</h1>
-          <p>Rebase is a protocol for rewarding LPs and stakers. <Link to="/about">Learn more</Link></p>
+          <h1 className="heading">
+            <span>Powering</span>
+            <span>Liquidity</span> 
+            <span>Incentives</span>
+          </h1>
+          <p>Audited platform to incentivize, stake and manage liquidity for your token. <Link className="text-link" to="/about">Learn more</Link></p>
         </div>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <Link to="./crowdpools">
+            <button className="primary-button-white" >Crowdpool</button>
+          </Link>
+          <Link to="./refi">
+            <button className="primary-button-dark" >Stake $REFI</button>
+          </Link>
+        </div>
+        <br />
+        <br />
         <div style={{ textAlign: 'left' }}>
           <div className="flex" style={{ padding: '1em 1em', fontWeight: 'bold' }}>
             <div className="flex-grow">Active LP Campaigns</div>
