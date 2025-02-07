@@ -20,6 +20,7 @@ function Wallet() {
     <div style={{ position: "relative", padding: "0 .5em" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <h1 style={{ textAlign: "center" }}>Staked Assets</h1>
+        <br />
         {
           !userAddress &&
           <div style={{ textAlign: 'center' }}>
@@ -31,7 +32,9 @@ function Wallet() {
         <br />
         {userApps.map(a => <WalletApp key={`app-${a}`} app={a} />)}
         {userApps.length == 0 ? (
-          <div style={{ textAlign: 'center' }}>Alas, nothing staked!</div>
+          <div style={{ textAlign: 'center' }}>
+            <p>Alas, nothing staked, anon!</p>
+          </div>
         ) : null}
       </div>
     </div>
