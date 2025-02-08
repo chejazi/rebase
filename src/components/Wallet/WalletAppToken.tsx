@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 import { prettyPrint } from 'utils/formatting';
-import { getTokenImage, getLPTokenImage } from 'utils/data';
+import { getTokenImageNoFallback, getLPTokenImage } from 'utils/data';
 import { tokenABI } from 'constants/abi-token';
 import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper-v1';
 
@@ -46,7 +46,7 @@ function Wallet({ stakeToken, stake, rewardToken }: { stakeToken: string; stake:
         style={{ width: '24px', height: '24px', marginRight: '.5em' }}
       >
         <img
-          src={isLPToken ? getLPTokenImage() : (tokenImage || getTokenImage(stakeToken))}
+          src={isLPToken ? getLPTokenImage() : (getTokenImageNoFallback(stakeToken) || tokenImage)}
           style={{ width: '24px', height: '24px', borderRadius: '500px' }}
         />
       </div>

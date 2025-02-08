@@ -6,7 +6,7 @@ import { Address, formatUnits, parseUnits } from 'viem';
 import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { erc20ABI } from 'constants/abi-erc20';
-import { getNullAddress, getTokenImage } from 'utils/data';
+import { getNullAddress, getTokenImageNoFallback } from 'utils/data';
 import { getDurationDays, prettyPrint } from 'utils/formatting';
 import UserIdentity from '../UserIdentity';
 import Username from '../Username';
@@ -225,7 +225,7 @@ function PoolPage() {
           <div className="flex" style={{ alignItems: 'center' }}>
             <img
               style={{ width: '50px', height: '50px', borderRadius: '500px', marginRight: '1em' }}
-              src={image || getTokenImage(baseToken)}
+              src={getTokenImageNoFallback(baseToken) || image}
             />
             <div className="flex-grow" style={{ fontWeight: 'bold' }}>
               <div>{prettyPrint(formatUnits(quantity, decimals), 0)} ${symbol} over {getDurationDays(duration)}</div>

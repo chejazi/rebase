@@ -3,15 +3,12 @@ export const prettyPrint = (num: string, units: number) => parseFloat(parseFloat
 export const prettyPrintTruncated = (num: string | number, units: number) => {
   let val = parseFloat(num.toString());
   let suffix = '';
-  if (val > 1_000_000_000) {
+  if (val >= 1_000_000_000) {
     val /= 1_000_000_000;
     suffix = 'B';
-  } else  if (val > 1_000_000) {
+  } else if (val >= 1_000_000) {
     val /= 1_000_000;
     suffix = 'M';
-  } else if (val > 10_000) {
-    val /= 1_000;
-    suffix = 'K';
   }
   return parseFloat(val.toFixed(units)).toLocaleString() + suffix;
 };

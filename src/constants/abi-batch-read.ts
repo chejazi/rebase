@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x6Bc1082cF821c41BEB3E82D6aDb64F2f95eD1D18';
+export const batchReadAddress = '0x0a4643575C9eEAFB827D5Ba1C004fC1bde8F0121';
 export const batchReadABI = [
   {
     "inputs": [],
@@ -314,28 +314,33 @@ export const batchReadABI = [
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "token0",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "token1",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amountToken0",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amountToken1",
         "type": "uint256"
       },
       {
         "internalType": "uint24",
-        "name": "",
+        "name": "fee",
         "type": "uint24"
+      },
+      {
+        "internalType": "bool",
+        "name": "poolExists",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -380,6 +385,11 @@ export const batchReadABI = [
         "internalType": "uint24[]",
         "name": "",
         "type": "uint24[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "",
+        "type": "bool[]"
       }
     ],
     "stateMutability": "view",

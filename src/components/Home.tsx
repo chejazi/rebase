@@ -114,7 +114,7 @@ function Home() {
     if (rewardsUsd > 0) {
       tvls.push(parseFloat((tokenUsd + wethUsd).toFixed(0)));
       // Sometimes, tokenUsd or wethUsd can be zero, resulting in APY errononeously doubling. Exclude that below
-      if (tokenUsd > 0 && wethUsd > 0 && tokenUsd + wethUsd > 100) {
+      if (tokenUsd > 0 && wethUsd > 0 && tokenUsd + wethUsd > 0) {
         const apy = 100 * (rewardsUsd / (tokenUsd + wethUsd));
         apys.push(parseFloat(apy.toFixed(0)));
       } else {

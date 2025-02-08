@@ -70,6 +70,7 @@ export const getTokenImageNoFallback = (address: string) => {
 };
 
 const tokenImages: StringMap = {
+  '0xbD2A89F43c209f23423dB5a01a62A9ED107D07d9': '/tokens/aimc.webp',
   '0x0Db510e79909666d6dEc7f5e49370838c16D950f': '/tokens/anon.png',
   '0x940181a94A35A4569E4529A3CDfB74e38FD98631': '/tokens/aero.webp',
   '0x344FFB8ee88525D00464e886251eB5511190a5E9': '/tokens/arrow.png',
@@ -80,6 +81,7 @@ const tokenImages: StringMap = {
   '0x0A6a945F1A110e4baE0480D277C000F3594605A2': '/tokens/clankerindex.webp',
   '0x1d008f50FB828eF9DEbBBEAe1B71FfFe929bf317': '/tokens/clankfun.webp',
   '0x621E87AF48115122Cd96209F820fE0445C2ea90e': '/tokens/crash.webp',
+  '0x28AfF0e8F18eb07E2F1221eb50a3aE26bD02D101': '/tokens/csmm.webp',
   '0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed': '/tokens/degen.webp',
   '0x4200000000000000000000000000000000000006': '/tokens/eth.webp',
   '0x8ad5b9007556749DE59E088c88801a3Aaa87134B': '/tokens/farther.png',
@@ -89,7 +91,9 @@ const tokenImages: StringMap = {
   '0x20DD04c17AFD5c9a8b3f2cdacaa8Ee7907385BEF': '/tokens/native.webp',
   '0x9A6d24c02eC35ad970287eE8296D4D6552a31DbE': '/tokens/opn.webp',
   '0x01929F1aE2dc8Cac021E67987500389aE3536CeD': '/tokens/proxy.png',
+  '0x1D35741C51fB615cA70e28d3321f6F01e8D8A12D': '/tokens/ratchet.webp',
   '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84': '/tokens/refi.png',
+  '0x5DeF7fAfFF2aa5725d1DC9617E1f82542A88337C': '/tokens/skibidi.webp',
   '0x07F41412697D14981e770b6E335051b1231A2bA8': '/tokens/stableai.png',
   '0xb488fCB23333e7bAA28D1dFd7B69a5D3a8BfeB3a': '/tokens/terminal.png',
   '0x5B5dee44552546ECEA05EDeA01DCD7Be7aa6144A': '/tokens/tn100x.png',

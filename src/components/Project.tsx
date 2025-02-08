@@ -11,7 +11,6 @@ import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deploye
 import * as legacyRefiApps from 'constants/abi-rebase-rewards';
 import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
 import { tokenABI } from 'constants/abi-token';
-import { refiAddress } from 'constants/abi-refi';
 import { appABI } from 'constants/abi-staking-app';
 import { rewardTargetsABI, rewardTargetsAddress } from 'constants/abi-reward-targets';
 import { getTokenPrices, getTokenImage, getLPTokenImage, getStakingApp, getNullAddress } from 'utils/data';
@@ -70,7 +69,7 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
 
   let tokens = tokensNew;
   let stakers = stakersNew;
-  if (tokenAddress != refiAddress) {
+  if (stakersNew.length == 0) {
     tokens = tokensLegacy;
     stakers = tokens.map(() => appAddress);
   }

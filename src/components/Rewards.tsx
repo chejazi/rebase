@@ -5,7 +5,7 @@ import { formatUnits, Address } from 'viem';
 import { appABI } from 'constants/abi-staking-app';
 import { tokenABI } from 'constants/abi-token';
 import { prettyPrint } from 'utils/formatting';
-import { getTokenImage } from 'utils/data';
+import { getTokenImageNoFallback } from 'utils/data';
 
 interface RewardsProps {
   rewardSymbol: string;
@@ -74,7 +74,7 @@ function Rewards({ rewardSymbol, rewardToken, appAddress }: RewardsProps) {
           style={{ width: '24px', height: '24px', marginRight: '.5em' }}
         >
           <img
-            src={tokenImage || getTokenImage(rewardToken)}
+            src={getTokenImageNoFallback(rewardToken) || tokenImage}
             style={{ width: '24px', height: '24px', borderRadius: '500px' }}
           />
         </div>

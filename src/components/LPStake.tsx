@@ -86,7 +86,8 @@ function LPStake({
     token0Amount,
     token1Amount,
     fee,
-  ] = (stakedLiquidityRes || [NULL_ADDRESS, NULL_ADDRESS, 0n, 0n, 0n]) as [Address, Address, bigint, bigint, bigint];
+    poolExists,
+  ] = (stakedLiquidityRes || [NULL_ADDRESS, NULL_ADDRESS, 0n, 0n, 0n, true]) as [Address, Address, bigint, bigint, bigint, boolean];
 
   useEffect(() => {
     if (token0 != NULL_ADDRESS && token1 != NULL_ADDRESS && rewardToken) {
@@ -249,17 +250,18 @@ function LPStake({
     } else if (token1 == WETH) {
       value = token1Wei;
     }
-    console.log([token0, token1, token0Wei, token1Wei, fee]);
     const deadline = Math.floor(new Date().getTime() / 1000) + 1800;
     writeContract({
       abi: lpCreatorABI,
       address: lpCreatorAddress,
-      functionName: "create",
+      functionName: poolExists ? "create" : "createAndInitializePool",
       args: [token0, token1, token0Wei, token1Wei, fee, deadline],
       chainId: base.id,
       value,
     });
   };
+
+  console.log(poolExists);
 
   const onTxn = () => {
     onTransaction();
@@ -322,7 +324,7 @@ function LPStake({
       {
         showLPForm ? (
           <div className="ui-island" style={{ padding: '0 1em 1em 1em' }}>
-            <div className="flex" style={{ alignItems: "center" }}>
+            <div className="flex" style={{ alignItems: "start" }}>
               <h4 className="flex-grow">
                 Create LP Position
                 <div style={{ fontSize: '.75em', fontWeight: 'normal', fontStyle: 'italic' }}>
@@ -334,12 +336,19 @@ function LPStake({
               </h4>
               <div
                 className="flex-shrink"
-                style={{ padding: '.5em 1em', fontWeight: 'bold', cursor: 'pointer' }}
+                style={{ padding: '1em 0', fontWeight: 'bold', cursor: 'pointer' }}
                 onClick={() => setShowLPForm(false)}
               >
                 <i className="fa-solid fa-xmark" />
               </div>
             </div>
+            {
+              (!token0Price || !token1Price) &&
+              <div className="secondary-bg" style={{ fontWeight: 'bold', textAlign: 'center', padding: '1em', border: '1px solid #999', borderRadius: '12px', marginBottom: '1em' }}>
+                <div><i className="fa-solid fa-exclamation-triangle" /> Price data missing</div>
+                <div style={{ fontSize: '.75em', marginTop: '.5em' }}>Ensure the amounts you provide below both have the same USD value</div>
+              </div>
+            }
             <div className="flex">
               <div className="flex-grow" style={{ textAlign: "center" }}>
                 <div style={{ fontWeight: "bold" }}>${symbol0}</div>
@@ -430,27 +439,27 @@ function LPStake({
               </div>
             </div>
             <div className="flex" style={{ marginTop: '1em' }}>
-            <button
-              className="buy-button flex-grow"
-              type="button"
-              disabled={creating || !hasAllowance0 || !hasAllowance1 || invalidQuantity || zeroQuantity}
-              onClick={create}
-            >
-              {
-                invalidQuantity ? (
-                  <span>insufficient balance</span>
-                ) : (
-                  <div>
-                    create position
-                    {
-                      creating ? (
-                        <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
-                      ) : null
-                    }
-                  </div>
-                )
-              }
-            </button>
+              <button
+                className="buy-button flex-grow"
+                type="button"
+                disabled={creating || !hasAllowance0 || !hasAllowance1 || invalidQuantity || zeroQuantity}
+                onClick={create}
+              >
+                {
+                  invalidQuantity ? (
+                    <span>insufficient balance</span>
+                  ) : (
+                    <div>
+                      create position
+                      {
+                        creating ? (
+                          <i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i>
+                        ) : null
+                      }
+                    </div>
+                  )
+                }
+              </button>
             </div>
           </div>
         ) : null
