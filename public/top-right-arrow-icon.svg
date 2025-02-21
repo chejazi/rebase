@@ -1,0 +1,25 @@
+<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="25" height="25" fill="#1E1E1E"/>
+<g id="Rebase - Homepage 16" clip-path="url(#clip0_0_1)">
+<rect width="1440" height="1339" transform="translate(-863 -363)" fill="url(#paint0_linear_0_1)"/>
+<g id="Frame 427321762">
+<g id="Frame 427321773">
+<g id="Frame 427321762_2">
+<rect x="-130.5" y="-10" width="171" height="45" rx="10" fill="#2F2F2F"/>
+<g id="Frame" opacity="0.8">
+<path id="Vector" d="M6.5 19.5L19.5 6.49994M19.5 6.49994V18.98M19.5 6.49994H7.02" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_1" x1="720" y1="1339" x2="1352.74" y2="888.295" gradientUnits="userSpaceOnUse">
+<stop stop-color="#202020"/>
+<stop offset="1" stop-color="#131313"/>
+</linearGradient>
+<clipPath id="clip0_0_1">
+<rect width="1440" height="1339" fill="white" transform="translate(-863 -363)"/>
+</clipPath>
+</defs>
+</svg>
