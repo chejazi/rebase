@@ -156,7 +156,7 @@ function REFI() {
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ textAlign: 'center' }}>
           <h1>$REFI</h1>
-          <p>Stake REFI to earn fees whenever a campaign is launched</p>
+          <p>5% of every LP incentive campaign launched on Rebase goes to $REFI stakers</p>
         </div>
         <div className="ui-island" style={{ padding: '1em' }}>
           <div className="flex">

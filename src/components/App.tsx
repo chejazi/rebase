@@ -1,7 +1,7 @@
 import WalletControl from './CustomConnectButton'
 import GlobalStyles from "./GlobalStyles";
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Home from './Home';
 import About from './About';
 import REFI from './REFI';

@@ -32,7 +32,7 @@ function BrowsePools() {
     <div style={{ maxWidth: "500px", margin: "0 auto" }}>
       <div style={{ textAlign: 'center' }}>
         <h1>Crowdpools</h1>
-        <p>Crowdfund an LP incentive campaign for a token</p>
+        <p>Create LP incentives for any token, funded by the community</p>
       </div>
       <br />
       <div className="flex" style={{ alignItems: 'center' }}>
