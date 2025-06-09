@@ -4,9 +4,9 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { base } from "wagmi/chains";
 import { Address } from 'viem';
 
-import { getWethAddress } from 'utils/data';
-import { erc20ABI } from 'constants/abi-erc20';
-import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
+import { getWethAddress } from '~/utils/data';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { poolFunderAddress, poolFunderABI } from '~/constants/abi-pool-funder';
 
 function CreatePool() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ function CreatePool() {
   useEffect(() => {
     if (writeError) {
       setPosting(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setPosting(false);

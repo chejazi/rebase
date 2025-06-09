@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from 'react';
-import { address2FC } from 'utils/data';
-import { prettyPrintAddress } from 'utils/formatting';
+import { address2FC } from '~/utils/data';
+import { prettyPrintAddress } from '~/utils/formatting';
 
 function UserIdentity({ address, children }: { address: string, children?: ReactNode | undefined }) {
   const [username, setUsername] = useState<string|null>('');
@@ -33,7 +33,7 @@ function UserIdentity({ address, children }: { address: string, children?: React
       </span>
     );
   }
-  let addressElt = <span>{prettyPrintAddress(address)}</span>;
+  const addressElt = <span>{prettyPrintAddress(address)}</span>;
   return (
     <div className="flex" style={{ alignItems: 'center' }}>
       <div className="flex-shrink">

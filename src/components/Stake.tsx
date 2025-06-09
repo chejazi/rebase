@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 
-import { prettyPrint } from 'utils/formatting';
-import { getTokenImage } from 'utils/data';
-import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
-import { erc20ABI } from 'constants/abi-erc20';
+import { prettyPrint } from '~/utils/formatting';
+import { getTokenImage } from '~/utils/data';
+import { rebaseABI, rebaseAddress } from '~/constants/abi-rebase-v0';
+import { erc20ABI } from '~/constants/abi-erc20';
 
 
 function Stake({ token }: { token: Address }) {

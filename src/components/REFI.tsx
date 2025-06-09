@@ -4,12 +4,12 @@ import { base } from "wagmi/chains";
 import { formatUnits, parseUnits, Address } from 'viem';
 import { Link } from "react-router-dom";
 
-import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
-import { splitterAddress } from 'constants/abi-pool-splitter';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { refiAddress } from 'constants/abi-refi';
-import { erc20ABI } from 'constants/abi-erc20';
-import { prettyPrint } from 'utils/formatting';
+import { rebaseABI, rebaseAddress } from '~/constants/abi-rebase-v1';
+import { splitterAddress } from '~/constants/abi-pool-splitter';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { refiAddress } from '~/constants/abi-refi';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { prettyPrint } from '~/utils/formatting';
 import RewardListItem from './RewardListItem';
 
 function REFI() {
@@ -42,7 +42,7 @@ function REFI() {
       setApproving(false);
       setStaking(false);
       setUnstaking(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       if (staking || unstaking) {

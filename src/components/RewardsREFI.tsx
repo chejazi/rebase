@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { base } from "wagmi/chains";
 import { formatUnits, Address } from 'viem';
-import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v0';
-import { rewardsAddress, lpRewardsAddress, rewardsABI } from 'constants/abi-rebase-rewards';
-import { refiAddress, refiABI } from 'constants/abi-refi';
-import { prettyPrint } from 'utils/formatting';
+import { rebaseABI, rebaseAddress } from '~/constants/abi-rebase-v0';
+import { rewardsAddress, lpRewardsAddress, rewardsABI } from '~/constants/abi-rebase-rewards';
+import { refiAddress, refiABI } from '~/constants/abi-refi';
+import { prettyPrint } from '~/utils/formatting';
 const UINT256MAX = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
 function RewardsREFI() {
@@ -29,7 +29,7 @@ function RewardsREFI() {
       setClaimingRefiRewards(false);
       setConvertingRebase(false);
       setAllowingRefi(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setClaimingRebaseRewards(false);

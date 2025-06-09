@@ -1,20 +1,26 @@
 {
-  "name": "rebase-frontend",
+  "name": "rebase-app",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "biome check .",
-    "preview": "vite preview"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "config": "node config"
   },
   "dependencies": {
-    "@farcaster/frame-sdk": "^0.0.20",
-    "@farcaster/frame-wagmi-connector": "^0.0.6",
+    "@farcaster/auth-kit": "^0.6.0",
+    "@farcaster/frame-core": "^0.0.29",
+    "@farcaster/frame-node": "^0.0.18",
+    "@farcaster/frame-sdk": "^0.0.31",
+    "@farcaster/frame-wagmi-connector": "^0.0.19",
     "@tanstack/react-query": "5.0.5",
     "axios": "^1.6.8",
     "connectkit": "^1.7.3",
+    "next": "^15.3.3",
+    "ox": "^0.4.2",
+    "pino-pretty": "^13.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3",
@@ -22,16 +28,16 @@
     "recharts": "^2.12.5",
     "styled-components": "^6.1.14",
     "viem": "^2.21.55",
-    "wagmi": "^2.14.3"
+    "wagmi": "^2.14.12"
   },
   "devDependencies": {
+    "@types/node": "^20",
     "@biomejs/biome": "^1.1.2",
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react": "^4.1.0",
     "@wagmi/cli": "latest",
-    "buffer": "^6.0.3",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.9"
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.3.3",
+    "typescript": "^5.2.2"
   }
 }

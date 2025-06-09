@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+  import { useEffect, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
 
@@ -7,14 +7,14 @@ import { StringNumberMap, Token, StringBooleanMap } from '../types';
 import PoolCard from './Pool/PoolCard';
 import Rewards from './Rewards';
 import StakeManager from './StakeManager';
-import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
-import * as legacyRefiApps from 'constants/abi-rebase-rewards';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { tokenABI } from 'constants/abi-token';
-import { appABI } from 'constants/abi-staking-app';
-import { rewardTargetsABI, rewardTargetsAddress } from 'constants/abi-reward-targets';
-import { getTokenPrices, getTokenImage, getLPTokenImage, getStakingApp, getNullAddress } from 'utils/data';
-import { prettyPrint } from 'utils/formatting';
+import { poolDeployerABI, poolDeployerAddress } from '~/constants/abi-pool-deployer';
+import * as legacyRefiApps from '~/constants/abi-rebase-rewards';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { tokenABI } from '~/constants/abi-token';
+import { appABI } from '~/constants/abi-staking-app';
+import { rewardTargetsABI, rewardTargetsAddress } from '~/constants/abi-reward-targets';
+import { getTokenPrices, getTokenImage, getLPTokenImage, getStakingApp, getNullAddress } from '~/utils/data';
+import { prettyPrint } from '~/utils/formatting';
 
 interface ProjectProps {
   projectSymbol: string;
@@ -98,8 +98,8 @@ function Project({ projectSymbol, tokenAddress }: ProjectProps) {
 
   useEffect(() => {
     if (tokens.length > 0) {
-      getTokenPrices(tokens.concat([tokenAddress as Address])).then((res: any) => {
-        setPrices(res as StringNumberMap);
+      getTokenPrices(tokens.concat([tokenAddress as Address])).then((res: StringNumberMap) => {
+        setPrices(res);
       });
     }
   }, [tokens, tokenStr]);

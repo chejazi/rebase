@@ -1,4 +1,4 @@
-export const batchReadAddress = '0x0a4643575C9eEAFB827D5Ba1C004fC1bde8F0121';
+export const batchReadAddress = '0x776A7A410F5fa3C1486d702bC72d9d78F11daF0A';
 export const batchReadABI = [
   {
     "inputs": [],

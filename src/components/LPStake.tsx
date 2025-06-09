@@ -5,12 +5,12 @@ import { base } from "wagmi/chains";
 import { formatUnits, Address, parseUnits } from 'viem';
 
 import LPNFT from './LPNFT';
-import { prettyPrintTruncated } from 'utils/formatting';
-import { getTokenPrices, getTokenPrice, getRebase } from 'utils/data';
-import { lpWrapperAddress, lpWrapperABI } from 'constants/abi-lp-wrapper-v1';
-import { lpCreatorAddress, lpCreatorABI } from 'constants/abi-lp-creator';
-import { erc20ABI } from 'constants/abi-erc20';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
+import { prettyPrintTruncated } from '~/utils/formatting';
+import { getTokenPrices, getTokenPrice, getRebase } from '~/utils/data';
+import { lpWrapperAddress, lpWrapperABI } from '~/constants/abi-lp-wrapper-v1';
+import { lpCreatorAddress, lpCreatorABI } from '~/constants/abi-lp-creator';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
 const WETH = '0x4200000000000000000000000000000000000006';
@@ -56,7 +56,7 @@ function LPStake({
       setApproving0(false);
       setApproving1(false);
       setCreating(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setStaking(false);

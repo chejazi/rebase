@@ -60,7 +60,7 @@ body {
   padding-top: 60px;
   display: flex;
   flex-direction: column;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-inter), system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   background: none;
   color: var(--color-text-dark);
@@ -81,7 +81,7 @@ body {
 }
 
 h1, h2, h3 {
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 p {
@@ -143,7 +143,7 @@ a {
   border-radius: var(--border-radius-l);
   box-shadow: var(--shadow-default);
   transition: box-shadow 0.3s ease;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   font-weight: bold;
   background-color: var(--color-surface-dark);
@@ -206,7 +206,7 @@ a {
   transition: box-shadow 0.3s ease;
   background-color: var(--color-surface-light);
   color: var(--color-text-light);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   font-weight: bold;
   padding: .7em 1.1em;
@@ -220,7 +220,7 @@ a {
   transition: box-shadow 0.3s ease;
   background-color: var(--color-surface-dark);
   color: var(--color-text-dark);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   font-weight: bold;
   padding: .7em 1.1em;
@@ -235,7 +235,7 @@ a {
   gap: 8px;
   border: 0;
   border-radius: 12px;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   color: #181818;
   background: #FFF;
@@ -254,7 +254,7 @@ a {
   gap: 8px;
   border: 0;
   border-radius: 12px;
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   color: var(--color-text-dark);
   background: #2F2F2F;
@@ -272,7 +272,7 @@ a {
   transition: box-shadow 0.3s ease;
   background-color: var(--color-surface-dark);
   color: var(--color-text-dark);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-inter), sans-serif;
   font-size: 1em;
   font-weight: bold;
   padding: .5em 1em;
@@ -441,7 +441,7 @@ a {
 }
 
 h1, h2, h3 {
-  font-family: Inter;
+  font-family: var(--font-inter);
 }
 
 h1 {
@@ -509,7 +509,7 @@ p {
   border-radius: 8px;
   color: #f8f8f8;
   transition: all 0.3s ease;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-inter), sans-serif;
   transition: background-color 0.2s ease;
 }
   .nav-icon:hover {

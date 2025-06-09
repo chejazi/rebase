@@ -1,6 +1,6 @@
 import { formatUnits } from 'viem';
 
-import { prettyPrint } from 'utils/formatting';
+import { prettyPrint } from '~/utils/formatting';
 
 interface RewardProgressBarProps {
   rewardTotal: bigint;

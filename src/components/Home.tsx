@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
@@ -5,11 +6,11 @@ import { Address, getAddress, formatUnits } from 'viem';
 
 import Project from './Project';
 
-import { getTokenImageNoFallback, getStakingApps, getTokenPrices, getTokenPrice, getUnknownToken } from 'utils/data';
-import { prettyPrintTruncated } from 'utils/formatting';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { poolDeployerABI, poolDeployerAddress } from 'constants/abi-pool-deployer';
-import { tokenABI } from 'constants/abi-token';
+import { getTokenImageNoFallback, getStakingApps, getTokenPrices, getTokenPrice, getUnknownToken } from '~/utils/data';
+import { prettyPrintTruncated } from '~/utils/formatting';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { poolDeployerABI, poolDeployerAddress } from '~/constants/abi-pool-deployer';
+import { tokenABI } from '~/constants/abi-token';
 
 const WETH = '0x4200000000000000000000000000000000000006';
 
@@ -126,8 +127,11 @@ function Home() {
     }
   });
 
-  // @ts-ignore: TS6133
-  const tokensSorted = apys.slice(0).map((x, i) => i).filter((i) => apys[i] > 0).sort((i, j) => tvls[i] < tvls[j] ? 1 : -1);
+  const tokensSorted = apys
+    .slice(0)
+    .map((x, i) => i)
+    .filter((i) => apys[i] > 0)
+    .sort((i, j) => tvls[i] < tvls[j] ? 1 : -1);
 
   return (
     <div style={{ position: "relative", padding: "0 .5em" }}>
@@ -160,7 +164,12 @@ function Home() {
               const tokenAddress = tokenAddresses[i];
               const image = getTokenImageNoFallback(tokenAddress) || images[i] || getUnknownToken();
               return (
-                <Link to={`/${tokenAddress}`} className="flex ui-island" style={{ marginBottom: '1em', padding: '1em', alignItems: 'center', textDecoration: 'none', fontWeight: 'bold' }}>
+                <Link
+                  key={tokenAddress}
+                  to={`/${tokenAddress}`}
+                  className="flex ui-island"
+                  style={{ marginBottom: '1em', padding: '1em', alignItems: 'center', textDecoration: 'none', fontWeight: 'bold' }}
+                >
                   <img style={{ width: '40px', height: '40px', borderRadius: '500px' }} src={image} />
                   <div className="flex-grow" style={{ padding: '0 1em' }}>
                     <div>${symbols[i]}</div>

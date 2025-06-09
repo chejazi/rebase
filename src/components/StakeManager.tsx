@@ -5,11 +5,11 @@ import { formatUnits, parseUnits, Address } from 'viem';
 import { Link } from "react-router-dom";
 
 import LPStake from './LPStake';
-import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper-v1';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { erc20ABI } from 'constants/abi-erc20';
-import { prettyPrint } from 'utils/formatting';
-import { getRebase } from 'utils/data';
+import { lpWrapperABI, lpWrapperAddress } from '~/constants/abi-lp-wrapper-v1';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { prettyPrint } from '~/utils/formatting';
+import { getRebase } from '~/utils/data';
 
 interface StakeManagerProps {
   stakeToken: Address;
@@ -56,7 +56,7 @@ function StakeManager({
       setStaking(false);
       setStakingETH(false);
       setUnstaking(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       if (staking || unstaking) {

@@ -5,10 +5,10 @@ import { Address, getAddress } from 'viem';
 
 import Project from './Project';
 
-import { getTokenImage } from 'utils/data';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { launcherABI, launcherAddress } from 'constants/abi-launcher';
-import { tokenABI } from 'constants/abi-token';
+import { getTokenImage } from '~/utils/data';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { launcherABI, launcherAddress } from '~/constants/abi-launcher';
+import { tokenABI } from '~/constants/abi-token';
 
 function Home() {
   const { token } = useParams();
@@ -98,6 +98,7 @@ function Home() {
               const image = images[i] || getTokenImage(t);
               return (
                 <Link
+                  key={`launcher-${t}`}
                   to={`/${t}`}
                   className='token-box'
                   onClick={() => setRefresh(true)}

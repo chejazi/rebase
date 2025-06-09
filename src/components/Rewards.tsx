@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { base } from "wagmi/chains";
 import { formatUnits, Address } from 'viem';
-import { appABI } from 'constants/abi-staking-app';
-import { tokenABI } from 'constants/abi-token';
-import { prettyPrint } from 'utils/formatting';
-import { getTokenImageNoFallback } from 'utils/data';
+import { appABI } from '~/constants/abi-staking-app';
+import { tokenABI } from '~/constants/abi-token';
+import { prettyPrint } from '~/utils/formatting';
+import { getTokenImageNoFallback } from '~/utils/data';
 
 interface RewardsProps {
   rewardSymbol: string;
@@ -28,7 +28,7 @@ function Rewards({ rewardSymbol, rewardToken, appAddress }: RewardsProps) {
   useEffect(() => {
     if (writeError) {
       setClaimingRewards(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setClaimingRewards(false);

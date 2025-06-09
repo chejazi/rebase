@@ -3,11 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 import { base } from "wagmi/chains";
 import { Address, formatUnits, parseUnits } from 'viem';
-import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { erc20ABI } from 'constants/abi-erc20';
-import { getNullAddress, getTokenImageNoFallback } from 'utils/data';
-import { getDurationDays, prettyPrint } from 'utils/formatting';
+import { poolFunderAddress, poolFunderABI } from '~/constants/abi-pool-funder';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { getNullAddress, getTokenImageNoFallback } from '~/utils/data';
+import { getDurationDays, prettyPrint } from '~/utils/formatting';
 import UserIdentity from '../UserIdentity';
 import Username from '../Username';
 
@@ -39,7 +39,7 @@ function PoolPage() {
       setRefunding(false);
       setDeploying(false);
       setCancelling(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       if (funding) {
@@ -255,7 +255,7 @@ function PoolPage() {
                       }
                     </button>
                     &nbsp;&nbsp;
-                    <button className="secondary-button" onClick={cancel}>
+                    <button className="buy-button" onClick={cancel}>
                       {cancelling ? 'cancelling' : 'cancel'}
                       {
                         cancelling ? (
@@ -299,14 +299,16 @@ function PoolPage() {
                   type="text"
                   name="quantity"
                   autoComplete="off"
-                  placeholder="quantity"
-                  style={{ width: "100%", textAlign: 'right' }}
+                  placeholder={`0 $${symbol}`}
+                  style={{ width: "100%", textAlign: 'left' }}
                   value={inputQuantity}
                   onChange={(e) => {
                     setInputQuantity(e.target.value.replace(/[^0-9.]/g, ''));
                   }}
                 />
-                <div className="flex-shrink" style={{ marginLeft: '.5em'}}>${symbol}</div>
+              </div>
+              <div style={{ fontSize: '.75em', marginBottom: '.5em' }}>
+                {prettyPrint(formatUnits(userWalletWei, decimals), 0)} ${symbol} in your wallet
               </div>
               <div className="flex" style={{ alignItems: "end", marginTop: '.5em' }}>
                 {
@@ -355,7 +357,7 @@ function PoolPage() {
                     {
                       (status == 1 || status == 3) && (funderQuantities[i] > 0n) && a == userAddress &&
                       <span style={{ fontSize: '.5em', marginLeft: '.5em' }}>
-                        <button className="secondary-button" onClick={refund}>
+                        <button className="buy-button" onClick={refund}>
                           {refunding ? (
                             <span>cancelling<i className="fa-duotone fa-spinner-third fa-spin" style={{ marginLeft: "1em" }}></i></span>
                           ) : 'cancel'}

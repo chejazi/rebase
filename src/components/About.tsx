@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { refiAddress } from 'constants/abi-refi';
+import { refiAddress } from '~/constants/abi-refi';
 
 function About() {
   return (
@@ -15,6 +15,9 @@ function About() {
         <h2><i className="fa-light fa-house" /> LP Staking Incentive Campaigns</h2>
         <p>Tokenized projects looking to increase the pool of liquidity surrounding their project token may want to launch an LP Staking Incentive Campaign on Rebase to incentivize additional liquidity providers seeking to maximize their yield using native token awards.</p>
         <p>Every live LP Staking Incentive Campaign on Rebase contains two immutable fields: 1) an end date that the Campaign will expire on and 2) a specific amount of native token rewards to be streamed to users who stake eligible LP position NFTs to the campaign.</p>
+        <h3>Staking an LP position NFT to a Rebase Campaign</h3>
+        <p>Once an LP Staking Incentive Campaign is live on Rebase, users can stake eligible wrapped two-sided full-range 1% Uniswap LP position NFTs to the campaign to begin earning token rewards until the Campaign expires or the staked LP position NFT is unstaked, whichever happens first. </p>
+        <p>Users can create &amp; wrap eligible LP position NFTs natively on Rebase within a specific LP Staking Incentive Campaign page or create the LP position NFT using the Uniswap app that they then wrap and stake on Rebase. Click <Link className="text-link" to="https://warpcast.com/niftytime.eth/0x77acdb30">here</Link> for a short video demonstrating how to create, wrap, and stake an LP position NFT to a specific LP Staking Incentive Campaigns on Rebase.</p>
         <h2>
           <div className="icon-container" style={{ display: 'inline-block', marginRight: '.25em', verticalAlign: 'middle' }}>
             <img src="/logo-stencil.png" className="daymode" alt="logo" style={{ width: "1em" }} />

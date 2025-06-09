@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { address2FC } from 'utils/data';
-import { prettyPrintAddress } from 'utils/formatting';
+import { address2FC } from '~/utils/data';
+import { prettyPrintAddress } from '~/utils/formatting';
 
 function Username({ address, link, both }: { address: string, link?: boolean, both?: boolean }) {
   const [username, setUsername] = useState<string|null>('');

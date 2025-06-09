@@ -1,7 +1,10 @@
+"use client";
+
 import WalletControl from './CustomConnectButton'
 import GlobalStyles from "./GlobalStyles";
 import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import sdk, { Context } from "@farcaster/frame-sdk";
 import Home from './Home';
 import About from './About';
 import REFI from './REFI';
@@ -21,6 +24,43 @@ function App() {
   const isInfo = location.pathname == '/about';
 
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isSDKLoaded, setIsSDKLoaded] = useState(false);
+  const [context, setContext] = useState<Context.FrameContext>();
+  const [frameAdded, setFrameAdded] = useState(false);
+
+  const added = frameAdded || context?.client?.added || false;
+  // const fid = context && context.user && context.user.fid;
+
+  useEffect(() => {
+    const load = async () => {
+      const context = await sdk.context;
+      setContext(context);
+      sdk.actions.ready({});
+    };
+    if (sdk && !isSDKLoaded) {
+      setIsSDKLoaded(true);
+      load();
+      return () => {
+        sdk.removeAllListeners();
+      };
+    }
+  }, [isSDKLoaded]);
+
+  const addFrame = async () => {
+    try {
+      setFrameAdded(true);
+      await sdk.actions.addFrame();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onFc = !!context;
+  useEffect(() => {
+    if (onFc && !added) {
+      addFrame();
+    }
+  }, [onFc, added]);
 
   useEffect(() => {
     const handleScroll = () => {

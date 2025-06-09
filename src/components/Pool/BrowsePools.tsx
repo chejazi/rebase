@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { Address } from 'viem';
-import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
-import { erc20ABI } from 'constants/abi-erc20';
+import { poolFunderAddress, poolFunderABI } from '~/constants/abi-pool-funder';
+import { erc20ABI } from '~/constants/abi-erc20';
 import PoolListItem from './PoolListItem';
 
 function BrowsePools() {

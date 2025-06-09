@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { Address, formatUnits } from 'viem';
-import { poolFunderAddress, poolFunderABI } from 'constants/abi-pool-funder';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { getNullAddress, getTokenImageNoFallback, getUnknownToken } from 'utils/data';
-import { getDurationDays, prettyPrint } from 'utils/formatting';
+import { poolFunderAddress, poolFunderABI } from '~/constants/abi-pool-funder';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { getNullAddress, getTokenImageNoFallback, getUnknownToken } from '~/utils/data';
+import { getDurationDays, prettyPrint } from '~/utils/formatting';
 import Username from '../Username';
 
 function PoolListItem({ poolId }: { poolId: number }) {

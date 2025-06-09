@@ -3,9 +3,9 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { base } from "wagmi/chains";
 import { Address } from 'viem';
 
-import { erc20ABI } from 'constants/abi-erc20';
-import { appABI } from 'constants/abi-staking-app';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
+import { erc20ABI } from '~/constants/abi-erc20';
+import { appABI } from '~/constants/abi-staking-app';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
 import RewardProgressBar from '../RewardProgressBar';
 
 interface PoolProps {
@@ -34,7 +34,7 @@ function Pool({ app, pool, token, stakeSymbol, rewardSymbol, cacheBust, synced, 
   useEffect(() => {
     if (writeError) {
       setJoining(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setJoining(false);

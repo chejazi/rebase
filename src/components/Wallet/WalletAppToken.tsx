@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useReadContract } from 'wagmi';
 import { formatUnits, Address } from 'viem';
-import { prettyPrint } from 'utils/formatting';
-import { getTokenImageNoFallback, getLPTokenImage } from 'utils/data';
-import { tokenABI } from 'constants/abi-token';
-import { lpWrapperABI, lpWrapperAddress } from 'constants/abi-lp-wrapper-v1';
+import { prettyPrint } from '~/utils/formatting';
+import { getTokenImageNoFallback, getLPTokenImage } from '~/utils/data';
+import { tokenABI } from '~/constants/abi-token';
+import { lpWrapperABI, lpWrapperAddress } from '~/constants/abi-lp-wrapper-v1';
 
 function Wallet({ stakeToken, stake, rewardToken }: { stakeToken: string; stake: bigint, rewardToken: string; }) {
   const { data: tokenSymbolRes } = useReadContract({

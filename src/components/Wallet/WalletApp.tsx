@@ -1,8 +1,8 @@
 import { useAccount, useReadContract } from 'wagmi';
 import { Address } from 'viem';
-import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
-import { tokenABI } from 'constants/abi-token';
-import { appABI } from 'constants/abi-staking-app';
+import { rebaseABI, rebaseAddress } from '~/constants/abi-rebase-v1';
+import { tokenABI } from '~/constants/abi-token';
+import { appABI } from '~/constants/abi-staking-app';
 import WalletAppToken from './WalletAppToken';
 import Rewards from '../Rewards';
 

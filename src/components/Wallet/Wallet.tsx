@@ -1,7 +1,7 @@
 import { ConnectKitButton } from 'connectkit';
 import { useAccount, useReadContract } from 'wagmi';
 import { Address } from 'viem';
-import { rebaseABI, rebaseAddress } from 'constants/abi-rebase-v1';
+import { rebaseABI, rebaseAddress } from '~/constants/abi-rebase-v1';
 import WalletApp from './WalletApp';
 
 function Wallet() {

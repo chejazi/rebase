@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { getAddress, Abi, Address } from 'viem'
 import { StringMap, NumberMap, StringNumberMap } from '../types';
-// import * as rebaseV0 from 'constants/abi-rebase-v0';
-import * as rebaseV0 from 'constants/abi-rebase-v0';
-import * as rebaseV1 from 'constants/abi-rebase-v1';
-import * as rebaseV2 from 'constants/abi-rebase-v2';
+// import * as rebaseV0 from '~/constants/abi-rebase-v0';
+import * as rebaseV0 from '~/constants/abi-rebase-v0';
+import * as rebaseV1 from '~/constants/abi-rebase-v1';
+import * as rebaseV2 from '~/constants/abi-rebase-v2';
 
 const cache = {
   tokenPrices: {} as StringNumberMap,
@@ -31,11 +31,11 @@ const fetchPricesByAddress = async (addresses: string[]) => {
   const addressesToFetch = addresses
     .map(a => getAddress(a))
     .filter(a => !cache.ttl[a] || cache.ttl[a] < now)
-    .slice(0, 30);
+    // .slice(0, 30);
 
-  if (addressesToFetch.length > 0) {
+  for (let i = 0; i < addressesToFetch.length; i += 30) {
     const response = await axios.get(
-      'https://api.geckoterminal.com/api/v2/simple/networks/base/token_price/' + addresses.join(',')
+      'https://api.geckoterminal.com/api/v2/simple/networks/base/token_price/' + addressesToFetch.slice(i, i + 30).join(',')
     );
     const tokenPrices = response.data.data.attributes.token_prices;
     Object.keys(tokenPrices).forEach((t) => {
@@ -52,7 +52,7 @@ export const getWethAddress = () => '0x4200000000000000000000000000000000000006'
 
 export const getTokenPrices = async (addresses: string[]) => {
   await fetchPricesByAddress(addresses);
-  return cache.tokenPrices as any;
+  return cache.tokenPrices as StringNumberMap;
   // const response = await axios.get(`https://up.army/_/token-prices?addresses=${addresses.join()}`, {});
   // return (response.data.results as any);
 };
@@ -90,6 +90,7 @@ const tokenImages: StringMap = {
   '0xB1a03EdA10342529bBF8EB700a06C60441fEf25d': '/tokens/miggles.webp',
   '0x20DD04c17AFD5c9a8b3f2cdacaa8Ee7907385BEF': '/tokens/native.webp',
   '0x9A6d24c02eC35ad970287eE8296D4D6552a31DbE': '/tokens/opn.webp',
+  '0xF65C3c30dd36b508E29a538B79b21e9b9E504E6C': '/tokens/pro.webp',
   '0x01929F1aE2dc8Cac021E67987500389aE3536CeD': '/tokens/proxy.png',
   '0x1D35741C51fB615cA70e28d3321f6F01e8D8A12D': '/tokens/ratchet.webp',
   '0x7dbdBF103Bb03c6bdc584c0699AA1800566f0F84': '/tokens/refi.png',
@@ -140,6 +141,7 @@ const stakingApps: StringMap = {
   'REFI': '0x44F9DB2D109F0910BF32394FF346ee2cEA7d26BB',
   'VROOM': '0xeb918bb84B23d9557f8887FBb6060FF78d1Bb6D3',
   'WARPCASH': '0x96190BaCDe41bF416Db58A25acB01c36498da8Fd',
+  'PRO': '0x31adD893487dbf2ACdBcAff9a4cA4d1d3685850E'
 };
 
 export async function address2FC(address: string) {

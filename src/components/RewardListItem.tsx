@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { base } from "wagmi/chains";
 import { Address, formatUnits } from 'viem';
-import { splitterAddress, splitterABI } from 'constants/abi-pool-splitter';
-import { batchReadABI, batchReadAddress } from 'constants/abi-batch-read';
-import { getNullAddress, getRefiAddress, getTokenImageNoFallback, getUnknownToken } from 'utils/data';
-import { prettyPrint } from 'utils/formatting';
+import { splitterAddress, splitterABI } from '~/constants/abi-pool-splitter';
+import { batchReadABI, batchReadAddress } from '~/constants/abi-batch-read';
+import { getNullAddress, getRefiAddress, getTokenImageNoFallback, getUnknownToken } from '~/utils/data';
+import { prettyPrint } from '~/utils/formatting';
 
 function RewardListItem({ snapshotId }: { snapshotId: number }) {
   const account = useAccount();
@@ -24,7 +24,7 @@ function RewardListItem({ snapshotId }: { snapshotId: number }) {
   useEffect(() => {
     if (writeError) {
       setClaiming(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setClaiming(false);

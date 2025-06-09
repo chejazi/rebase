@@ -5,10 +5,10 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { base } from "wagmi/chains";
 import { formatUnits, Address } from 'viem';
 
-import { prettyPrintTruncated } from 'utils/formatting';
-import { lpWrapperAddress, lpWrapperABI } from 'constants/abi-lp-wrapper-v1';
-import { batchReadAddress, batchReadABI } from 'constants/abi-batch-read';
-import { lpNFTABI, lpNFTAddress } from 'constants/abi-lp-nft';
+import { prettyPrintTruncated } from '~/utils/formatting';
+import { lpWrapperAddress, lpWrapperABI } from '~/constants/abi-lp-wrapper-v1';
+import { batchReadAddress, batchReadABI } from '~/constants/abi-batch-read';
+import { lpNFTABI, lpNFTAddress } from '~/constants/abi-lp-nft';
 
 const NULL_ADDRESS = '0x0000000000000000000000000000000000000000' as Address;
 
@@ -54,7 +54,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, onTransaction, walletWei }: LPNFTP
   const maxTick = Number(positionsRes[6] as bigint);
   const liquidity = positionsRes[7] as bigint;
 
-  let feeSupported = feeTier == fee;
+  const feeSupported = feeTier == fee;
   let inRange = false;
   if (fee == 100) {
     inRange = (minTick == -887272 && maxTick == 887272);
@@ -95,7 +95,7 @@ function LPNFT({ tokenId, feeTier, isWrapped, onTransaction, walletWei }: LPNFTP
   useEffect(() => {
     if (writeError) {
       setLoading(false);
-      // @ts-ignore: TS2339
+      // @ts-expect-error: TS2339
       setTimeout(() => window.alert(writeError.shortMessage), 1);
     } else if (isConfirmed) {
       setLoading(false);
