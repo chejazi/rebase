@@ -1,7 +1,7 @@
 'use client';
-import { BrowserRouter } from 'react-router-dom'
-
-import WagmiProvider from "~/components/providers/WagmiProvider";
+import dynamic from 'next/dynamic';
+const Router = dynamic(() => import('./router'), { ssr: false });
+const WagmiProvider = dynamic(() => import("~/components/providers/WagmiProvider"), { ssr: false });
 
 export default function Client({
   children,
@@ -10,10 +10,10 @@ export default function Client({
 }>) {
   
   return (
-    <BrowserRouter>
-      <WagmiProvider>
+    <WagmiProvider>
+      <Router>
         {children}
-      </WagmiProvider>
-    </BrowserRouter>
+      </Router>
+    </WagmiProvider>
   );
 }

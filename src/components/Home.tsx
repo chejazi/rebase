@@ -94,7 +94,22 @@ function Home() {
               </Link>
             </div>
             <div style={{ fontSize: '.75em' }}>
-              CA: <Link to={`https://basescan.org/token/${token}`}>{getAddress(token)}</Link>
+              <Link
+                to={`https://dexscreener.com/base/${token}`}
+                className="flex-grow"
+                target="_blank"
+                style={{
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  // color: '#666',
+                  padding: '.25em 0',
+                  cursor: 'pointer',
+                  border: '1px solid transparent'
+                }}
+              >
+                Trade&nbsp;<i className="fa-light fa-up-right-from-square"></i>
+              </Link>
             </div>
           </div>
         </div>

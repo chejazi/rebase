@@ -8,16 +8,17 @@ type Props = {
 
 const appUrl = getAppUrl();
 
-const getFrameTemplate = (path: string) => {
+const getFrameTemplate = (path: string | string[]) => {
+  const pathStr = Array.isArray(path) ? path.join('/') : path;
   return {
     version: "next",
-    imageUrl: `${appUrl}/opengraph-image`,
+    imageUrl: `${appUrl}/start-image-1260x660.png`,
     button: {
       title: "Open",
       action: {
         type: "launch_frame",
         name: "Rebase",
-        url: `${appUrl}/${path}`,
+        url: `${appUrl}/${pathStr}`,
         splashImageUrl: `${appUrl}/splash.png`,
         splashBackgroundColor: "#ffffff",
       },
@@ -29,7 +30,7 @@ export const revalidate = 300;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { page } = await params;
-  const frame = getFrameTemplate(page || '');
+  const frame = getFrameTemplate(page || []);
   return {
     title: "Rebase",
     openGraph: {

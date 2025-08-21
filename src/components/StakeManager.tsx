@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { base } from "wagmi/chains";
 import { formatUnits, parseUnits, Address } from 'viem';
-import { Link } from "react-router-dom";
 
 import LPStake from './LPStake';
 import { lpWrapperABI, lpWrapperAddress } from '~/constants/abi-lp-wrapper-v1';
@@ -249,28 +248,6 @@ function StakeManager({
               >
                 Unstake
               </div>
-              {
-                isLPToken ? (
-                  null
-                ) : (
-                  <Link
-                    to={`https://dexscreener.com/base/${stakeToken}`}
-                    className="flex-grow"
-                    target="_blank"
-                    style={{
-                      textDecoration: 'none',
-                      textAlign: 'center',
-                      fontWeight: 'bold',
-                      // color: '#666',
-                      padding: '.25em 0',
-                      cursor: 'pointer',
-                      border: '1px solid transparent'
-                    }}
-                  >
-                    Trade&nbsp;<i className="fa-light fa-up-right-from-square"></i>
-                  </Link>
-                )
-              }
             </div>
             <div style={{ fontSize: '.8em', marginTop: '1em' }}>
               <div>{prettyPrint(totalStakedUnits, 4)} ${stakeSymbol} staked in total</div>

@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         await setUserNotificationDetails(fid, event.notificationDetails);
         await sendFrameNotification({
           fid,
-          title: "Farstore added to Warpcast",
+          title: "Rebase added to Warpcast",
           body: "DM @kompreni with any feedback/requests",
         });
       } else {

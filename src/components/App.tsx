@@ -14,8 +14,10 @@ import CreatePool from './Pool/CreatePool';
 import BrowsePools from './Pool/BrowsePools';
 import Launcher from './Launcher';
 
+
 function App() {
   const location = useLocation();
+  console.log(location);
 
   const isCrowdfund = location.pathname.indexOf('/crowdpool') > -1;
   const isRefi = location.pathname == '/refi';

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getAppUrl } from "~/lib/data";
 
 export const dynamic = 'force-dynamic';
 export const contentType = "image/png";
@@ -6,6 +7,9 @@ export const contentType = "image/png";
 const baseUrl = process.env.NEXT_PUBLIC_URL;
 
 export default async function Image() {
+  if (true) {
+    return Response.redirect(`${getAppUrl()}/start-image-1260x660.png`, 307);
+  }
   return new ImageResponse(
     (
       <div tw="h-full w-full flex flex-col justify-center align-center items-start relative" style={{ backgroundColor: '#ffffff', color: '#000000' }}>

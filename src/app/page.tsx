@@ -8,7 +8,7 @@ const appUrl = getAppUrl();
 
 const frame = {
   version: "next",
-  imageUrl: `${appUrl}/opengraph-image`,
+  imageUrl: `${appUrl}/start-image-1260x660.png`,
   button: {
     title: "Open",
     action: {
